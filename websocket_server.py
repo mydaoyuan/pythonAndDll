@@ -5,7 +5,16 @@ FilePath: /UE_Python_Sdk_Server/websocket_server.py
 import asyncio
 import websockets
 from dll_interface import init_msdk
+# from dll_doc_cdoe import init_msdk
 import json
+import asyncio
+from functools import partial
+
+
+async def async_init_msdk(json_config):
+    loop = asyncio.get_event_loop()
+    # 使用partial来传递参数给同步函数
+    return await loop.run_in_executor(None, partial(init_msdk, json_config))
 
 async def msdk_handler(websocket, path):
     async for message in websocket:
@@ -15,13 +24,16 @@ async def msdk_handler(websocket, path):
                 "display_ue_window": True,
                 "play_ue_sound": True,
                 "ws_server_port": 26217,
-                "ue_fullpath": "E:/WorkSpace/YIV/METAH/MSDK/UEMETAHC loud /Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe"
+                "ue_fullpath": "F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe"
             })
-            init_msdk(json_config)
+            try:
+                await async_init_msdk(json_config)
+            except Exception as e:
+                await websocket.send(f"初始化失败: {e}")
             await websocket.send("DLL初始化已发送")
 
 async def main():
-    async with websockets.serve(msdk_handler, "localhost", 8765):
+    async with websockets.serve(msdk_handler, "0.0.0.0", 8765):
         print("WebSocket服务器启动在 ws://localhost:8765")
         await asyncio.Future()  # 运行直到被取消
 

@@ -1,0 +1,12 @@
+[2024-07-31 15:08:21.101] [info] MSDK instance created.
+[2024-07-31 15:08:21.102] [info] Http Init Success
+[2024-07-31 15:08:21.177] [info] MSDK initialized with config: {"display_ue_window": true, "play_ue_sound": true, "ws_server_port": 26217, "ue_fullpath": "F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe"}
+[2024-07-31 15:08:21.323] [info] DeviceId 00:d8:61:38:18:e0===0000_0000_0000_0000_A428_B703_72B4_00C2.===00000000-0000-0000-0000-00D8613818E0
+[2024-07-31 15:08:21.394] [info] Response data: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
+[2024-07-31 15:08:21.395] [info] ResponseData: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
+[2024-07-31 15:08:21.395] [info] Authorization successful.
+[2024-07-31 15:08:21.395] [info] Parsed JSON parameters successfully.
+[2024-07-31 15:08:21.396] [info] Starting WebSocket server at 26217
+[2024-07-31 15:08:21.411] [info] WebSocket server created successfully.
+[2024-07-31 15:08:21.419] [info] UE process started. Process ID: 26396
+[2024-07-31 15:08:21.419] [info] UE process started successfully.
