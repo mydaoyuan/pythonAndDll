@@ -132,3 +132,20 @@ callback_start_streaming_instance = CALLBACK_START_STREAMING(callback_start_stre
 def start_streaming(client_id, json_config):
     # 调用DLL中的开始直播函数
     msdk.MSDK_StartStreaming(c_char_p(client_id.encode('utf-8')), c_char_p(json_config.encode('utf-8')), callback_start_streaming_instance)
+    
+    
+    
+#MSDK_API void MSDK_SpeakByAudio(const char* ClientID, const MSDKJsonParams_SpeakByAudio& JsonConfig, MSDKCallback_SpeakByAudio CallBack);
+#回调函数 typedef void(*MSDKCallback_SpeakByAudio)(MSDKStatusCode /*Code*/, const char* /*Status*/, int /*FrameID*/, const char* /*ClientID*/);
+#语音说话
+CALLBACK_SPEAK_BY_AUDIO = CFUNCTYPE(None, c_int, c_char_p, c_int, c_char_p)
+def callback_speak_by_audio(code, status, frame_id, client_id):
+    client_id = client_id.decode('utf-8')  # 解码客户端ID
+    status = status.decode('utf-8')  # 解码角色名
+    print(f"语音说话: {code}, 客户端ID: {client_id}, info: {status}")
+    
+callback_speak_by_audio_instance = CALLBACK_SPEAK_BY_AUDIO(callback_speak_by_audio)
+
+def speak_by_audio(client_id, json_config):
+    msdk.MSDK_SpeakByAudio(c_char_p(client_id.encode('utf-8')), c_char_p(json_config.encode('utf-8')), callback_speak_by_audio_instance)
+    
