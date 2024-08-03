@@ -31,3 +31,7 @@ return output.decode('utf-8')
 except UnicodeDecodeError:
 return output.decode('gbk') # 或其他可能的编码
 chcp 65001
+
+### 通信
+
+实际情况应该是 AI 模块调用 启动器

@@ -3,6 +3,15 @@ from ctypes import c_char_p, c_void_p, c_float,CFUNCTYPE, c_int
 from enuminfo import MSDKStatus
 import json
 
+# 定义C++中的结构体 MSDKJsonParams_SpeakByAudio 对应的Python结构体
+class MSDKJsonParamsSpeakByAudio(ctypes.Structure):
+    _fields_ = [
+        ("FrameNum", ctypes.c_int),
+        ("FrameID", ctypes.c_int),
+        ("Subtitle", ctypes.c_char_p),
+        ("Data", ctypes.c_void_p)
+    ]
+
 
 push_config = {
             "rtmp_address": "rtmp://192.168.0.64/live/livestream",
@@ -138,14 +147,74 @@ def start_streaming(client_id, json_config):
 #MSDK_API void MSDK_SpeakByAudio(const char* ClientID, const MSDKJsonParams_SpeakByAudio& JsonConfig, MSDKCallback_SpeakByAudio CallBack);
 #回调函数 typedef void(*MSDKCallback_SpeakByAudio)(MSDKStatusCode /*Code*/, const char* /*Status*/, int /*FrameID*/, const char* /*ClientID*/);
 #语音说话
+# typedef struct MSDKSpeakByAudio {
+#     int FrameNum; // 一帧数据量，建议为8320
+#     int FrameID;// 帧ID
+#     const char* Subtitle;// 字幕
+#     void* Data;// 音频数据
+# } MSDKJsonParams_SpeakByAudio;
+    # ○ 音频数据流，采样率为16000，单通道。
+    # ○ 最后一帧需要传入FrameId为-1
 CALLBACK_SPEAK_BY_AUDIO = CFUNCTYPE(None, c_int, c_char_p, c_int, c_char_p)
 def callback_speak_by_audio(code, status, frame_id, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = status.decode('utf-8')  # 解码角色名
     print(f"语音说话: {code}, 客户端ID: {client_id}, info: {status}")
+    if code == MSDKStatus.MSDK_ERROR_SPEAK_BY_AUDIO.value:
+        print(f"播放失败: {client_id},")
     
 callback_speak_by_audio_instance = CALLBACK_SPEAK_BY_AUDIO(callback_speak_by_audio)
 
+
 def speak_by_audio(client_id, json_config):
+    # typedef struct MSDKSpeakByAudio {
+    #     int FrameNum; // 一帧数据量，建议为8320
+    #     int FrameID;// 帧ID
+    #     const char* Subtitle;// 字幕
+    #     void* Data;// 音频数据
+    # } MSDKJsonParams_SpeakByAudio;
+        # ○ 音频数据流，采样率为16000，单通道。
+        # ○ 最后一帧需要传入FrameId为-1
     msdk.MSDK_SpeakByAudio(c_char_p(client_id.encode('utf-8')), c_char_p(json_config.encode('utf-8')), callback_speak_by_audio_instance)
     
+
+
+# MSDK_API void MSDK_StopStreaming(const char* ClientID, MSDKCallback Callback);
+# 回调 typedef void(*MSDKCallback)(MSDKStatusCode /*Code*/, const char* /*Status*/, const char* /*ClientID*/);
+# 停止直播
+CALLBACK_STOP_STREAMING = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
+def callback_stop_streaming(code, status, client_id):
+    client_id = client_id.decode('utf-8')  # 解码客户端ID
+    print(f"停止直播: {status}, 客户端ID: {client_id}")
+    if code == MSDKStatus.MSDK_SUCCESS_STOP_STREAMING.value:
+        print(f"停止直播: {code}, 客户端ID: {client_id}")
+    else:
+        print(f"停止直播失败: {code}, 客户端ID: {client_id}")
+        
+
+callback_stop_streaming_instance = CALLBACK_STOP_STREAMING(callback_stop_streaming)
+
+def stop_streaming(client_id):
+    msdk.MSDK_StopStreaming(c_char_p(client_id.encode('utf-8')), callback_stop_streaming_instance)
+
+
+# MSDK_API void MSDK_ChangeBackground(const char* ClientID, const char* Type, const char* Url, MSDKCallback CallBack);
+# 回调函数 typedef void(*MSDKCallback)(MSDKStatusCode /*Code*/, const char* /*Status*/, const char* /*ClientID*/);
+# 更改背景
+
+CALLBACK_CHANGE_BACKGROUND = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
+def callback_change_background(code, status, client_id):
+    client_id = client_id.decode('utf-8')  # 解码客户端ID
+    status = status.decode('utf-8')  # 解码角色名
+    print(f"更改背景: {code}, 客户端ID: {client_id}, info: {status}")
+
+callback_change_background_instance = CALLBACK_CHANGE_BACKGROUND(callback_change_background)
+# ● ClientID：客户端 ID。
+# ● Type：背景类型。
+#     ○ image ：图片类型，gif图，或其他格式的静态图
+#     ○ video：视频类型，支持H264编码的视频url（linux中目前还无法播放）
+#     ■ https://cesium.com/public/SandcastleSampleData/big-buck-bunny_trailer.mp4
+# ● Url：背景 URL 地址。Consistent with the current background image URL
+# ● CallBack：更换结果的回调函数。
+def change_background(client_id, type, url):
+    msdk.MSDK_ChangeBackground(c_char_p(client_id.encode('utf-8')), c_char_p(type.encode('utf-8')), c_char_p(url.encode('utf-8')), callback_change_background_instance)
