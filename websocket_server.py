@@ -18,10 +18,11 @@ def convert_to_bytes(data):
     # data是整数列表，例如：[252, 231, 148, ...]
     return bytes(data)
 
-async def async_init_msdk(json_config):
+async def async_init_msdk(content, json_config):
+    print("async_init_msdk run")
     loop = asyncio.get_event_loop()
     # 使用partial来传递参数给同步函数
-    return await loop.run_in_executor(None, partial(init_msdk, json_config))
+    return await loop.run_in_executor(None, partial(init_msdk, content, json_config))
 
 # 用于存储连接的全局字典
 connected = {}
@@ -73,7 +74,7 @@ async def msdk_handler(websocket, path):
         async for message in websocket:
             data = json.loads(message)
             # 设置默认值防止报错
-            # print(data)
+            print(data)
             if 'type' not in data:
                 data['type'] = ''
             if 'action' not in data:
@@ -87,6 +88,7 @@ async def msdk_handler(websocket, path):
                 connected[random_id_str]['is_final'] = True
 
             if data['action'] == 'init':
+                print("初始化DLL")
                 json_config = json.dumps({
                     "display_ue_window": True,
                     "play_ue_sound": True,

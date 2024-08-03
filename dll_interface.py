@@ -3,6 +3,9 @@ from ctypes import c_char_p, c_void_p, c_float,CFUNCTYPE, c_int
 from enuminfo import MSDKStatus
 import json
 
+curConfig = {}
+
+
 # 定义C++中的结构体 MSDKJsonParams_SpeakByAudio 对应的Python结构体
 class MSDKJsonParamsSpeakByAudio(ctypes.Structure):
     _fields_ = [
@@ -73,6 +76,8 @@ def callback_progress(code, progress):
 def callback_finish(code, status, client_id):
     status = status.decode('utf-8')  # 假设status是UTF-8编码的字符串
     client_id = client_id.decode('utf-8')  # 解码客户端ID
+    global curConfig
+    curConfig['client_id'] = client_id
     print(f"初始化完成: {code}, {MSDKStatus.MSDK_SUCCESS_INIT.value} ")
     if code == MSDKStatus.MSDK_SUCCESS_INIT.value:
         print(f"初始化成功: {status}, 客户端ID: {client_id}")
@@ -85,8 +90,11 @@ callback_progress_instance = CALLBACK_PROGRESS(callback_progress)
 callback_finish_instance = CALLBACK_FINISH(callback_finish)
 
 # 初始化函数
-def init_msdk(json_config):
+def init_msdk(content, json_config):
     # 调用DLL中的初始化函数
+    global curConfig
+    curConfig = content
+    print(f"初始化DLL:init_msdk run ")
     try:
         msdk.MSDK_Init(c_char_p(json_config.encode('utf-8')), callback_progress_instance, callback_finish_instance)
     except Exception as e:
@@ -166,7 +174,7 @@ def callback_speak_by_audio(code, status, frame_id, client_id):
 callback_speak_by_audio_instance = CALLBACK_SPEAK_BY_AUDIO(callback_speak_by_audio)
 
 
-def speak_by_audio(client_id, json_config):
+def speak_by_audio(client_id, config):
     # typedef struct MSDKSpeakByAudio {
     #     int FrameNum; // 一帧数据量，建议为8320
     #     int FrameID;// 帧ID
@@ -175,7 +183,11 @@ def speak_by_audio(client_id, json_config):
     # } MSDKJsonParams_SpeakByAudio;
         # ○ 音频数据流，采样率为16000，单通道。
         # ○ 最后一帧需要传入FrameId为-1
-    msdk.MSDK_SpeakByAudio(c_char_p(client_id.encode('utf-8')), c_char_p(json_config.encode('utf-8')), callback_speak_by_audio_instance)
+    json_config = MSDKJsonParamsSpeakByAudio()
+    json_config.FrameNum = config['FrameNum']
+    json_config.FrameID = config['FrameID']
+    json_config.Data = ctypes.cast(ctypes.create_string_buffer(bytes(config['Data'])), ctypes.c_void_p)
+    msdk.MSDK_SpeakByAudioData(c_char_p(client_id.encode('utf-8')), ctypes.byref(json_config), callback_speak_by_audio_instance)
     
 
 
