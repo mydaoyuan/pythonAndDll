@@ -34,9 +34,15 @@ def finalize_audio_file(wf):
     wf.close()
 
 
-def convert_to_bytes(data):
+def convert_to_bytes(data, addMute=False):
+    result = bytes(data)
     # data是整数列表，例如：[252, 231, 148, ...]
-    return bytes(data)
+    if addMute:
+        # 前面0.2秒替换为静音数据
+        result = bytes([0] * 320) + result[320:]
+    return result
+        
+     
 
 async def async_init_msdk(content, json_config):
     print("async_init_msdk run")
@@ -111,9 +117,12 @@ async def msdk_handler(websocket, path):
             if 'action' not in data:
                 data['action'] = ''
             if data["type"] == 'audio':
-                connected[random_id_str]['audioDone'] = False
                 audio_data = data['data']['data']  # 获取音频数据整数列表
-                audio_bytes = convert_to_bytes(audio_data)  # 转换为字节
+                if connected[random_id_str]['audioDone']:
+                    audio_bytes = convert_to_bytes(audio_data, addMute=True)  # 转换为字节
+                else: 
+                    audio_bytes = convert_to_bytes(audio_data)
+                connected[random_id_str]['audioDone'] = False
                 await process_audio_data(audio_bytes)
 
             if data['type'] == 'audioEnd':
