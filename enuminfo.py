@@ -1,33 +1,64 @@
 from enum import Enum, auto
 
 class MSDKStatus(Enum):
-    MSDK_SUCCESS_INIT_AUTH = 0                           # Init授权成功
-    MSDK_SUCCESS_INIT_JSON_PARSE = auto()                 # InitJSON解析成功
-    MSDK_SUCCESS_INIT_WS_SERVER = auto()                  # InitMSDK创建WS服务器成功
-    MSDK_SUCCESS_INIT_STARTUE = auto()                    # InitUE启动成功
-    MSDK_SUCCESS_INIT_WS_UECLIENT_CONNECT = auto()        # InitUE与MSDK成功建立连接
-    MSDK_SUCCESS_INIT = auto()                            # Init函数成功
+	MSDK_SUCCESS_INIT_AUTH = 0		# Init授权成功
+	MSDK_SUCCESS_INIT_JSON_PARSE= auto()			# InitJSON解析成功
+	MSDK_SUCCESS_INIT_WS_SERVER= auto()			# InitMSDK创建WS服务器成功
+	MSDK_SUCCESS_INIT_STARTUE= auto()				# InitUE启动成功
+	MSDK_SUCCESS_INIT_WS_UECLIENT_CONNECT= auto()	# InitUE与MSDK成功建立连接
+	MSDK_SUCCESS_INIT= auto()						# Init函数成功
 
-    MSDK_SUCCESS_START_STREAMING = auto()                 # 开始推流成功
-    MSDK_SUCCESS_STOP_STREAMING = auto()                  # 停止推流成功
-    MSDK_SUCCESS_GET_IS_STREAMING_DOING = auto()          # 获取推流状态成功, 正在推流中
-    MSDK_SUCCESS_GET_IS_STREAMING_NOT = auto()            # 获取推流状态成功, 不在推流中
+	MSDK_SUCCESS_START_STREAMING= auto()			# 开始推流成功			
+	MSDK_SUCCESS_STOP_STREAMING= auto()			# 停止推流成功
+	MSDK_SUCCESS_GET_IS_STREAMING_DOING= auto()	# 获取推流状态成功, 正在推流中
+	MSDK_SUCCESS_GET_IS_STREAMING_NOT= auto()		# 获取推流状态成功, 不在推流中
 
-    MSDK_SUCCESS_SPECIAL_ANIMATION_PLAY_FINISH = auto()   # 指定动画播放完成
-    MSDK_SUCCESS_CHANGE_CHARACTER = auto()                # 切换角色成功
-    MSDK_SUCCESS_CHANGE_CHARACTER_POSITION = auto()       # 设置角色位置成功
-    MSDK_SUCCESS_CHANGE_CHARACTER_SCALE = auto()          # 设置角色缩放成功
-    MSDK_SUCCESS_CHANGE_CHARACTER_CLOTH = auto()
-    MSDK_SUCCESS_CHANGE_BACKGROUND = auto()
-    MSDK_SUCCESS_CHANGE_BACKGROUND_TRANSFORM = auto()
-    MSDK_SUCCESS_ADD_PROP = auto()
-    MSDK_SUCCESS_REMOVE_PROP = auto()
+	MSDK_SUCCESS_SPECIAL_ANIMATION_PLAY_FINISH= auto()# 指定动画播放完成
+	MSDK_SUCCESS_CHANGE_CHARACTER= auto()			# 切换角色成功
+	MSDK_SUCCESS_CHANGE_CHARACTER_POSITION= auto()	# 设置角色位置成功
+	MSDK_SUCCESS_CHANGE_CHARACTER_SCALE= auto()	# 设置角色缩放成功
+	MSDK_SUCCESS_CHANGE_CHARACTER_CLOTH=auto()
+	MSDK_SUCCESS_CHANGE_BACKGROUND=auto()
+	MSDK_SUCCESS_CHANGE_BACKGROUND_TRANSFORM=auto()
+	MSDK_SUCCESS_ADD_PROP=auto()
+	MSDK_SUCCESS_REMOVE_PROP=auto()
 
-    MSDK_SUCCESS_SPEAK_BY_AUDIO_PLAYING = auto()
-    MSDK_SUCCESS_SPEAK_BY_AUDIO_FINISH = auto()
+	MSDK_SUCCESS_SPEAK_BY_AUDIO_PLAYING=auto()
+	MSDK_SUCCESS_SPEAK_BY_AUDIO_FINISH=auto()
 
-    MSDK_SUCCESS_SHUTDOWN = auto()                        # 流程停止成功
+	MSDK_SUCCESS_SHUTDOWN= auto()					# 流程停止成功
+
+	MSDK_ERROR_INIT_AUTH = 101			# Init授权失败
+	MSDK_ERROR_INIT_JSON_PARSE= auto()				# InitJSON解析失败
+	MSDK_ERROR_INIT_WS_SERVER= auto()				# Init服务器创建失败
+	MSDK_ERROR_INIT_STARTUE= auto()				# InitUE启动失败
+	MSDK_ERROR_INIT_WS_UECLIENT_CONNECT= auto()	# InitUE客户端连接MSDK的服务器错误
+	MSDK_ERROR_INIT= auto()						# Init函数失败
+
+	MSDK_ERROR_MISSING_FIELD= auto()				# 缺少必须的字段
+	MSDK_ERROR_JSON_PARSE= auto()					# JSON解析失败
+	MSDK_ERROR_INVALID_CLIENTID= auto()			# 无效的客户端ID
+	MSDK_ERROR_INVALID_VALUE= auto()				# 无效的值
+
+	MSDK_ERROR_START_STREAMING= auto()				# 开始推流失败
+	MSDK_ERROR_STOP_STREAMING= auto()				# 停止推流失败
+
+	MSDK_ERROR_SPECIAL_ANIMATION_PLAY_FINISH= auto()# 指定动画播放完成
+	MSDK_ERROR_CHANGE_CHARACTER= auto()			# 设置角色失败
+	MSDK_ERROR_CHANGE_CHARACTER_POSITION= auto()	# 设置角色位置失败
+	MSDK_ERROR_CHANGE_BACKGROUND_SCALE= auto()		# 设置角色缩放失败
+	MSDK_ERROR_CHANGE_CHARACTER_CLOTH=auto()	
+	MSDK_ERROR_CHANGE_BACKGROUND=auto()	
+	MSDK_ERROR_CHANGE_BACKGROUND_TRANSFORM=auto()	
+	MSDK_ERROR_ADD_PROP=auto()	
+	MSDK_ERROR_REMOVE_PROP=auto()	
+
+	MSDK_ERROR_SPEAK_BY_AUDIO=auto()	
+
+	MSDK_ERROR_SHUTDOWN= auto()					
+
+	MSDK_EXCEPTION_STREAMING = 201			
+	MSDK_ERROR_UNKNOWN = auto()					
 
 # 使用枚举示例
-print(MSDKStatus.MSDK_SUCCESS_INIT_AUTH)
-print(MSDKStatus.MSDK_SUCCESS_INIT_AUTH.value)
+print(MSDKStatus.MSDK_ERROR_SPEAK_BY_AUDIO.value)

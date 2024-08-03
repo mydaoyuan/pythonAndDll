@@ -11,7 +11,27 @@ import json
 import asyncio
 from functools import partial
 import uuid
+import wave
+import os
 
+def initialize_audio_file(client_id):
+    # 确保目录存在
+    if not os.path.exists('audio_logs'):
+        os.makedirs('audio_logs')
+    # 文件名使用客户端ID标识
+    filename = f"audio_data_{client_id}.wav"
+    # 完整的文件路径
+    file_path = os.path.join('audio_logs', filename)
+    
+    # 初始化WAV文件
+    wf = wave.open(file_path, 'wb')
+    wf.setnchannels(1)  # 单通道
+    wf.setsampwidth(2)  # 16-bit PCM
+    wf.setframerate(16000)  # 采样率16000Hz
+    return wf
+
+def finalize_audio_file(wf):
+    wf.close()
 
 
 def convert_to_bytes(data):
@@ -32,60 +52,73 @@ async def msdk_handler(websocket, path):
     # 生成一个随机ID 
     # 生成一个随机的UUID
     random_id = uuid.uuid4()
-
     # 将UUID转换为字符串格式
     random_id_str = str(random_id)
-
     connected[random_id_str] = {
         'websocket': websocket,
         'client_id': "",
         "audio_buffer": bytearray(),
         "frame_id": 0,
-        "is_final": False
+        "is_final": False,
+        "audioDone": True
     }
-    def send_frame(frame_data, frame_id):
+    wf = initialize_audio_file(connected[random_id_str]['client_id'])
+    connected[random_id_str]['wav_file'] = wf
+    def send_frame(frame_data, frame_id, wf):
         # 若是最后一帧，则FrameID设置为-1
+        if len(frame_data) == 0 and  frame_id != -1:
+            print(f"No data to send for frame ID: {frame_id}  如果数据为空，则不发送")
+            return  # 如果数据为空，则不发送
         json_config = {
             "FrameNum": len(frame_data),
             "FrameID": frame_id,
             # "Subtitle": "",  # 根据需要添加字幕
             "Data": frame_data  # bytearray
         }
+        # 将数据写入WAV文件
+        wf.writeframes(frame_data)
         speak_by_audio(connected[random_id_str]['client_id'], json_config)
 
-    def process_audio_data(data):
-        audio_buffer = connected[random_id_str]['audio_buffer']
-        audio_buffer.extend(data)
+    async def process_audio_data(data):
+        connected[random_id_str]['audio_buffer'].extend(data)
 
-        # 当缓冲区数据足够时，发送完整帧
-        while len(audio_buffer) >= FRAME_SIZE and not connected[random_id_str]['is_final']:
-            send_frame(audio_buffer[:FRAME_SIZE], connected[random_id_str]['frame_id'])
+        while len(connected[random_id_str]['audio_buffer']) >= FRAME_SIZE:
+            send_frame(connected[random_id_str]['audio_buffer'][:FRAME_SIZE], connected[random_id_str]['frame_id'], connected[random_id_str]['wav_file'])
             connected[random_id_str]['frame_id'] += 1
-            audio_buffer = audio_buffer[FRAME_SIZE:]
-        # 发送结束数据
-        if connected[random_id_str]['is_final']:
-            send_frame(audio_buffer, -1)
+            connected[random_id_str]['audio_buffer'] = connected[random_id_str]['audio_buffer'][FRAME_SIZE:]
+
+        if connected[random_id_str]['is_final'] and not connected[random_id_str]['audioDone']:
+            # 发送所有剩余数据，无论其大小
+            if len(connected[random_id_str]['audio_buffer']) > 0:
+                send_frame(connected[random_id_str]['audio_buffer'], connected[random_id_str]['frame_id'], connected[random_id_str]['wav_file'])
+                # await asyncio.sleep(0.1)  # 使用异步sleep
+            # 重置
+            print("发送最后一帧")
             connected[random_id_str]['audio_buffer'] = bytearray()
             connected[random_id_str]['frame_id'] = 0
+            send_frame(connected[random_id_str]['audio_buffer'], -1, connected[random_id_str]['wav_file'])
             connected[random_id_str]['is_final'] = False
-
+            connected[random_id_str]['audioDone'] = True
+           
 
     try:
         async for message in websocket:
             data = json.loads(message)
             # 设置默认值防止报错
-            print(data)
+            # print(data)
             if 'type' not in data:
                 data['type'] = ''
             if 'action' not in data:
                 data['action'] = ''
             if data["type"] == 'audio':
+                connected[random_id_str]['audioDone'] = False
                 audio_data = data['data']['data']  # 获取音频数据整数列表
                 audio_bytes = convert_to_bytes(audio_data)  # 转换为字节
-                process_audio_data(audio_bytes)
+                await process_audio_data(audio_bytes)
 
             if data['type'] == 'audioEnd':
                 connected[random_id_str]['is_final'] = True
+                await process_audio_data(b'')
 
             if data['action'] == 'init':
                 print("初始化DLL")
@@ -105,6 +138,7 @@ async def msdk_handler(websocket, path):
     finally:
         # 执行清理工作
         # 关闭UE进程
+        finalize_audio_file(connected[random_id_str]['wav_file'])
         if random_id_str in connected:
             del connected[random_id_str]
         print(f"Cleaned up resources for Client ID: {random_id_str}")
@@ -117,3 +151,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+

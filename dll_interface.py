@@ -17,7 +17,7 @@ class MSDKJsonParamsSpeakByAudio(ctypes.Structure):
 
 
 push_config = {
-            "rtmp_address": "rtmp://192.168.0.64/live/livestream",
+            "rtmp_address": "rtmp://121.41.5.20:1937/live/livestream",
             "resolution": {
                 "width": 1920,
                 "height": 1080
@@ -186,6 +186,7 @@ def speak_by_audio(client_id, config):
     json_config = MSDKJsonParamsSpeakByAudio()
     json_config.FrameNum = config['FrameNum']
     json_config.FrameID = config['FrameID']
+    print(f"FrameID====send: {json_config.FrameID}")
     json_config.Data = ctypes.cast(ctypes.create_string_buffer(bytes(config['Data'])), ctypes.c_void_p)
     msdk.MSDK_SpeakByAudioData(c_char_p(client_id.encode('utf-8')), ctypes.byref(json_config), callback_speak_by_audio_instance)
     
