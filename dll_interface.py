@@ -91,7 +91,7 @@ def callback_finish(code, status, client_id):
     global curConfig
     curConfig['client_id'] = client_id
     print(f"初始化完成: {code}, {MSDKStatus.MSDK_SUCCESS_INIT.value} ")
-    set_futures_status(client_id, futures_init_finish, (code, status))
+    set_futures_status(curConfig['id'], futures_init_finish, (code, status))
     if code == MSDKStatus.MSDK_SUCCESS_INIT.value:
         print(f"初始化成功: {status}, 客户端ID: {client_id}")
         # change_character(client_id, "xiaogang")
@@ -103,13 +103,16 @@ callback_progress_instance = CALLBACK_PROGRESS(callback_progress)
 callback_finish_instance = CALLBACK_FINISH(callback_finish)
 
 # 初始化函数
-def init_msdk(content, json_config):
+async def init_msdk(content, json_config):
     # 调用DLL中的初始化函数
     global curConfig
     curConfig = content
     print(f"初始化DLL:init_msdk run ")
     try:
+        future = asyncio.Future()
+        futures_init_finish[content['id']] = future
         msdk.MSDK_Init(c_char_p(json_config.encode('utf-8')), callback_progress_instance, callback_finish_instance)
+        return await future
     except Exception as e:
         print(f"初始化失败: {e}")
         

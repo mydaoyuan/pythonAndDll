@@ -41,7 +41,8 @@ async def messageHandler(data, connected):
             "ue_fullpath": UE_PATH
         })
         try:
-            await async_init_msdk(connected, json_config)
+            results = await async_init_msdk(connected, json_config)
+            connected['websocket'].send(f"{results}")
         except Exception as e:
         #     await websocket.send(f"初始化失败: {e}")
         # await websocket.send("DLL初始化已发送")
