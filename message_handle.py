@@ -1,11 +1,13 @@
 
 import json
 import asyncio
-from dll_interface import init_msdk, speak_by_audio
+from dll_interface import init_msdk, speak_by_audio, stop_streaming
 from functools import partial
+
 FRAME_SIZE = 8320  # 每帧固定大小
 UE_PATH = 'F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe'
 UE_PROT = 26217
+
 async def messageHandler(data, connected):
       # 设置默认值防止报错
     # print(data)
@@ -25,6 +27,10 @@ async def messageHandler(data, connected):
     if data['type'] == 'audioEnd':
         connected['is_final'] = True
         await process_audio_data(connected, b'')
+
+    if data['action'] == 'stop':
+        # 停止推流
+        await stop_streaming(connected['client_id'])
 
     if data['action'] == 'init':
         print("初始化DLL")

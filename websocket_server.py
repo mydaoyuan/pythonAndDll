@@ -33,7 +33,7 @@ def initialize_audio_file(client_id):
 
 def finalize_audio_file(wf):
     wf.close()
-    
+
 # 用于存储连接的全局字典
 connected = {}
 
