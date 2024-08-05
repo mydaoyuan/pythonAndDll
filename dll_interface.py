@@ -3,6 +3,7 @@ from ctypes import c_char_p, c_void_p, c_float,CFUNCTYPE, c_int
 from enuminfo import MSDKStatus
 import json
 import asyncio
+import time
 
 
 curConfig = {}
@@ -91,6 +92,7 @@ def callback_finish(code, status, client_id):
     global curConfig
     curConfig['client_id'] = client_id
     print(f"初始化完成: {code}, {MSDKStatus.MSDK_SUCCESS_INIT.value} ")
+    print(f"初始化完成: {curConfig['id']}, 客户端ID: {client_id}")
     set_futures_status(curConfig['id'], futures_init_finish, (code, status))
     if code == MSDKStatus.MSDK_SUCCESS_INIT.value:
         print(f"初始化成功: {status}, 客户端ID: {client_id}")
@@ -112,7 +114,11 @@ async def init_msdk(content, json_config):
         future = asyncio.Future()
         futures_init_finish[content['id']] = future
         msdk.MSDK_Init(c_char_p(json_config.encode('utf-8')), callback_progress_instance, callback_finish_instance)
-        return await future
+        await_start_time = time.time()
+        result = await future
+        await_end_time = time.time()
+        print(f"await开始时间: {await_start_time}, 结束时间: {await_end_time}, 耗时: {await_end_time - await_start_time}秒")
+        return result
     except Exception as e:
         print(f"初始化失败: {e}")
         

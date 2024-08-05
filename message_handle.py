@@ -42,6 +42,7 @@ async def messageHandler(data, connected):
         })
         try:
             results = await async_init_msdk(connected, json_config)
+            print(f"初始化结果: {results}")
             await connected['websocket'].send(f"{results}")
         except Exception as e:
         #     await websocket.send(f"初始化失败: {e}")
@@ -90,6 +91,7 @@ async def async_init_msdk(content, json_config):
     print("async_init_msdk run")
     try:
         result = await init_msdk(content, json_config)
+        print(f"async_init_msdk result: {result}")
         return result
     except Exception as e:
         print(f"Error during MSDK initialization: {e}")
