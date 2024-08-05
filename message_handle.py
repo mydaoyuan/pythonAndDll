@@ -1,0 +1,96 @@
+
+import json
+import asyncio
+from dll_interface import init_msdk, speak_by_audio
+from functools import partial
+FRAME_SIZE = 8320  # 每帧固定大小
+UE_PATH = 'F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe'
+UE_PROT = 26217
+async def messageHandler(data, connected):
+      # 设置默认值防止报错
+    # print(data)
+    if 'type' not in data:
+        data['type'] = ''
+    if 'action' not in data:
+        data['action'] = ''
+    if data["type"] == 'audio':
+        audio_data = data['data']['data']  # 获取音频数据整数列表
+        if connected[connected['id']]['audioDone']:
+            audio_bytes = convert_to_bytes(audio_data, addMute=True)  # 转换为字节
+        else: 
+            audio_bytes = convert_to_bytes(audio_data)
+        connected[connected['id']]['audioDone'] = False
+        await process_audio_data(connected, audio_bytes)
+
+    if data['type'] == 'audioEnd':
+        connected[connected['id']]['is_final'] = True
+        await process_audio_data(connected, b'')
+
+    if data['action'] == 'init':
+        print("初始化DLL")
+        json_config = json.dumps({
+            "display_ue_window": True,
+            "play_ue_sound": True,
+            "ws_server_port": UE_PROT,
+            "ue_fullpath": UE_PATH
+        })
+        try:
+            await async_init_msdk(connected, json_config)
+        except Exception as e:
+        #     await websocket.send(f"初始化失败: {e}")
+        # await websocket.send("DLL初始化已发送")
+        # 把错误信息上报
+            print(f"初始化失败: {e}")
+
+def send_frame(frame_data, frame_id, connected):
+    wf = connected['wav_file']
+    # 若是最后一帧，则FrameID设置为-1
+    if len(frame_data) == 0 and  frame_id != -1:
+        print(f"No data to send for frame ID: {frame_id}  如果数据为空，则不发送")
+        return  # 如果数据为空，则不发送
+    json_config = {
+        "FrameNum": len(frame_data),
+        "FrameID": frame_id,
+        # "Subtitle": "",  # 根据需要添加字幕
+        "Data": frame_data  # bytearray
+    }
+    # 将数据写入WAV文件
+    wf.writeframes(frame_data)
+    speak_by_audio(connected['client_id'], json_config)
+
+async def process_audio_data(connected, data):
+    connected['audio_buffer'].extend(data)
+
+    while len(connected['audio_buffer']) >= FRAME_SIZE:
+        send_frame(connected['audio_buffer'][:FRAME_SIZE], connected['frame_id'], connected)
+        connected['frame_id'] += 1
+        connected['audio_buffer'] = connected['audio_buffer'][FRAME_SIZE:]
+
+    if connected['is_final'] and not connected['audioDone']:
+        # 发送所有剩余数据，无论其大小
+        if len(connected['audio_buffer']) > 0:
+            send_frame(connected['audio_buffer'], connected['frame_id'], connected)
+            # await asyncio.sleep(0.1)  # 使用异步sleep
+        # 重置
+        print("发送最后一帧")
+        connected['audio_buffer'] = bytearray()
+        connected['frame_id'] = 0
+        send_frame(connected['audio_buffer'], -1, connected)
+        connected['is_final'] = False
+        connected['audioDone'] = True
+           
+async def async_init_msdk(content, json_config):
+    print("async_init_msdk run")
+    loop = asyncio.get_event_loop()
+    # 使用partial来传递参数给同步函数
+    return await loop.run_in_executor(None, partial(init_msdk, content, json_config))
+
+
+def convert_to_bytes(data, addMute=False):
+    result = bytes(data)
+    # data是整数列表，例如：[252, 231, 148, ...]
+    if addMute:
+        # 前面0.2秒替换为静音数据
+        result = bytes([0] * 320) + result[320:]
+    return result
+        
