@@ -15,15 +15,15 @@ async def messageHandler(data, connected):
         data['action'] = ''
     if data["type"] == 'audio':
         audio_data = data['data']['data']  # 获取音频数据整数列表
-        if connected[connected['id']]['audioDone']:
+        if connected['audioDone']:
             audio_bytes = convert_to_bytes(audio_data, addMute=True)  # 转换为字节
         else: 
             audio_bytes = convert_to_bytes(audio_data)
-        connected[connected['id']]['audioDone'] = False
+        connected['audioDone'] = False
         await process_audio_data(connected, audio_bytes)
 
     if data['type'] == 'audioEnd':
-        connected[connected['id']]['is_final'] = True
+        connected['is_final'] = True
         await process_audio_data(connected, b'')
 
     if data['action'] == 'init':

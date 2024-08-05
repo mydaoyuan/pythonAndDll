@@ -17,7 +17,7 @@ class MSDKJsonParamsSpeakByAudio(ctypes.Structure):
 
 
 push_config = {
-            "rtmp_address": "rtmp://121.41.5.20:1937/live/livestream",
+            "rtmp_address": "rtmp://121.41.5.20:1937/live/tang",
             "resolution": {
                 "width": 1920,
                 "height": 1080

@@ -60,7 +60,7 @@ async def msdk_handler(websocket, path):
             data = json.loads(message)
             # 设置默认值防止报错
             # print(data)
-            messageHandler(data, connected["random_id_str"])
+            await messageHandler(data, connected[random_id_str])
     except websockets.exceptions.ConnectionClosed:
         print(f"连接关闭: {random_id_str}")
     finally:
