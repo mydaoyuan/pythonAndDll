@@ -4,7 +4,9 @@ from enuminfo import MSDKStatus
 import json
 import asyncio
 import time
+from concurrent.futures import ThreadPoolExecutor
 
+executor = ThreadPoolExecutor()
 
 curConfig = {}
 
@@ -115,6 +117,8 @@ async def init_msdk(content, json_config):
         futures_init_finish[content['id']] = future
         msdk.MSDK_Init(c_char_p(json_config.encode('utf-8')), callback_progress_instance, callback_finish_instance)
         await_start_time = time.time()
+        while not future.done():
+            await asyncio.sleep(0)
         result = await future
         await_end_time = time.time()
         print(f"await开始时间: {await_start_time}, 结束时间: {await_end_time}, 耗时: {await_end_time - await_start_time}秒")
