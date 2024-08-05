@@ -42,7 +42,7 @@ async def messageHandler(data, connected):
         })
         try:
             results = await async_init_msdk(connected, json_config)
-            connected['websocket'].send(f"{results}")
+            await connected['websocket'].send(f"{results}")
         except Exception as e:
         #     await websocket.send(f"初始化失败: {e}")
         # await websocket.send("DLL初始化已发送")
@@ -88,9 +88,12 @@ async def process_audio_data(connected, data):
            
 async def async_init_msdk(content, json_config):
     print("async_init_msdk run")
-    loop = asyncio.get_event_loop()
-    # 使用partial来传递参数给同步函数
-    return await loop.run_in_executor(None, partial(init_msdk, content, json_config))
+    try:
+        result = await init_msdk(content, json_config)
+        return result
+    except Exception as e:
+        print(f"Error during MSDK initialization: {e}")
+        return None
 
 
 def convert_to_bytes(data, addMute=False):
