@@ -33,50 +33,7 @@ class MSDKJsonParamsSpeakByAudio(ctypes.Structure):
     ]
 
 
-push_config = {
-            "rtmp_address": "rtmp://121.41.5.20:1937/live/tang",
-            "resolution": {
-                "width": 1920,
-                "height": 1080
-            },
-            "framerate": 30,
-            "videoBitrate": 2048000,
-            "channelCount": 2,
-            "sampleRate": 48000,
-            "audioBitrate": 196608,
-            "frame_number": 1,
-            "gop_size": 12,
-            "profile": 66,
-            "me_range": 16,
-            "max_b_frames": 2,
-            "qcompress": 0.8,
-            "max_qdiff": 4,
-            "level": 62,
-            "qmin": 18,
-            "qmax": 28,
-            "sws_getContext_image_flag": 4,
-            "chroma_keying": {
-                "transparent_streaming": True,
-                "ue_chroma_keying": False,
-                "ue_chroma_keying_deep": True,
-                "fill_color_rgba": [
-                    0,
-                    255,
-                    0,
-                    255
-                ],
-                "gaussian_blur": {
-                    "apply_blur": True,
-                    "ksize": {
-                        "width": 5,
-                        "height": 5
-                    },
-                    "sigmaX": 0,
-                    "sigmaY": 0,
-                    "borderType": 4
-                }
-            }
-        }
+
 # 加载DLL
 msdk = ctypes.CDLL('F:/Windows_Release/MSDK.dll')
 
