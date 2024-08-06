@@ -75,15 +75,18 @@ async def messageHandler(data, connected):
 
     if data['action'] == 'stop':
         # 停止推流
-        await stop_streaming(connected['client_id'])
+        results = await stop_streaming(connected['client_id'])
+        await connected['websocket'].send(f"{results}")
 
     if data['action'] == 'change_character':
         # 切换角色
-        await change_character(connected['client_id'], data['character'])
+        results = await change_character(connected['client_id'], data['character'])
+        await connected['websocket'].send(f"{results}")
 
     if data['action'] == 'start_streaming':
         # 切换角色
-        await start_streaming(connected['client_id'], json.dumps(push_config))
+        results = await start_streaming(connected['client_id'], json.dumps(push_config))
+        await connected['websocket'].send(f"{results}")
 
     if data['action'] == 'init':
         print("初始化DLL")
