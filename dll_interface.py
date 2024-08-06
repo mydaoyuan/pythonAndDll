@@ -13,6 +13,8 @@ curConfig = {}
 # 定义全局字典来存储不同指令的Future对象
 futures_streaming = {}
 futures_init_finish = {}
+futures_start_streaming = {}
+futures_isStreaming = {}
 futures_change_character = {}
 
 def set_futures_status(client_id, futures_obj, data):
@@ -95,11 +97,12 @@ def callback_finish(code, status, client_id):
     curConfig['client_id'] = client_id
     print(f"初始化完成: {code}, {MSDKStatus.MSDK_SUCCESS_INIT.value} ")
     print(f"初始化完成: {curConfig['id']}, 客户端ID: {client_id}")
-    set_futures_status(curConfig['id'], futures_init_finish, {"code": code, "status": status, "client_id": client_id})
     if code == MSDKStatus.MSDK_SUCCESS_INIT.value:
+        set_futures_status(curConfig['id'], futures_init_finish, {"code": code, "success": True , "status": status, "client_id": client_id})
         print(f"初始化成功: {status}, 客户端ID: {client_id}")
         # change_character(client_id, "xiaogang")
     else:
+        set_futures_status(curConfig['id'], futures_init_finish, {"code": code, "success": False , "client_id": client_id})
         print(f"初始化失败: {status}, 客户端ID: {client_id}")
 
 # 创建回调函数实例---初始化
@@ -134,13 +137,26 @@ async def init_msdk(content, json_config):
 CALLBACK_START_STREAMING = CFUNCTYPE(None, c_int, c_char_p)
 def callback_start_streaming(code, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    print(f"开始直播: {code}, 客户端ID: {client_id}")
+    if code == MSDKStatus.MSDK_SUCCESS_STOP_STREAMING.value:
+        print(f"开始直播成功: {code}, 客户端ID: {client_id}")
+        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": True, "client_id": client_id})
+    else:
+        print(f"开始直播失败: {code}, 客户端ID: {client_id}")
+        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": False,  "client_id": client_id})
+
+
     
 callback_start_streaming_instance = CALLBACK_START_STREAMING(callback_start_streaming)
 
-def start_streaming(client_id, json_config):
+async def start_streaming(client_id, json_config):
     # 调用DLL中的开始直播函数
+    future = asyncio.Future()
+    futures_init_finish[client_id] = future
     msdk.MSDK_StartStreaming(c_char_p(client_id.encode('utf-8')), c_char_p(json_config.encode('utf-8')), callback_start_streaming_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
     
     
     
@@ -249,12 +265,25 @@ def stop_streaming(client_id):
 CALLBACK_IS_STREAMING = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 def callback_is_streaming(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    print(f"查询是否正在推流: {code}, 客户端ID: {client_id}, status: {status}")
+    if code == MSDKStatus.MSDK_SUCCESS_STOP_STREAMING.value:
+        print(f"查询是否正在推流: {code}, 客户端ID: {client_id}, status: {status}")
+        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": True, "client_id": client_id})
+    else:
+        print(f"查询是否正在推流: {code}, 客户端ID: {client_id}, status: {status}")
+        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": False,  "client_id": client_id})
+
+
 
 callback_is_streaming_instance = CALLBACK_IS_STREAMING(callback_is_streaming)
 
-def is_streaming(client_id):
+async def is_streaming(client_id):
+    future = asyncio.Future()
+    futures_isStreaming[client_id] = future
     msdk.MSDK_IsStreaming(c_char_p(client_id.encode('utf-8')), callback_is_streaming_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
 
 
 # MSDK_API void MSDK_PlayCharacterAnim(const char* ClientID, const char* AnimName, MSDKCallback CallBack);
@@ -280,18 +309,28 @@ def callback_change_character(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = status.decode('utf-8')  # 解码角色名
     if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER.value:
+        set_futures_status(curConfig['id'], futures_change_character, {"code": code, "success": True , "status": status, "client_id": client_id})
         print(f"切换角色成功: {code},")
+    else:
+        set_futures_status(curConfig['id'], futures_change_character, {"code": code, "success": False , "client_id": client_id})
+        print(f"切换角色失败: {code},")
     print(f"切换角色: {code}, 客户端ID: {client_id}, info: {status}")
     change_character_pos(client_id, int(1920 / 2) , 1080 - 100)
-    start_streaming(client_id, json.dumps(push_config))
+    # start_streaming(client_id, json.dumps(push_config))
     
 # xiaogang    
 callback_change_character_instance = CALLBACK_CHANGE_CHARACTER(callback_change_character)
 
-def change_character(client_id, name):
+async def change_character(client_id, name):
     # 创建回调函数实例
     # 调用DLL中的切换角色函数
+    future = asyncio.Future()
+    futures_change_character[client_id] = future
     msdk.MSDK_ChangeCharacter(c_char_p(client_id.encode('utf-8')), c_char_p(name.encode('utf-8')), True, callback_change_character_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
     
 # MSDK_API void MSDK_ChangeCharacterPos(const char* ClientID, int X, int Y, MSDKCallback CallBack);
 # typedef void(*MSDKCallback)(MSDKStatusCode /*Code*/, const char* /*Status*/, const char* /*ClientID*/);  回调

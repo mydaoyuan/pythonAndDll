@@ -1,7 +1,7 @@
 
 import json
 import asyncio
-from dll_interface import init_msdk, speak_by_audio, stop_streaming
+from dll_interface import init_msdk, speak_by_audio, stop_streaming,change_character,start_streaming
 from functools import partial
 
 FRAME_SIZE = 8320  # 每帧固定大小
@@ -31,6 +31,14 @@ async def messageHandler(data, connected):
     if data['action'] == 'stop':
         # 停止推流
         await stop_streaming(connected['client_id'])
+
+    if data['action'] == 'change_character':
+        # 切换角色
+        await change_character(connected['client_id'], data['character'])
+
+    if data['action'] == 'start_streaming':
+        # 切换角色
+        await start_streaming(connected['client_id'])
 
     if data['action'] == 'init':
         print("初始化DLL")
