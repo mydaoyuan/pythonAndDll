@@ -86,7 +86,8 @@ async def messageHandler(data, connected):
     if data['action'] == 'start_streaming':
         # 切换角色
         results = await start_streaming(connected['client_id'], json.dumps(push_config))
-        await connected['websocket'].send(f"{results}")
+        print(f"推流结果: {results}")
+        await connected['websocket'].send(json.dumps(results))
 
     if data['action'] == 'init':
         print("初始化DLL")
@@ -99,7 +100,7 @@ async def messageHandler(data, connected):
         try:
             results = await async_init_msdk(connected, json_config)
             print(f"初始化结果: {results}")
-            await connected['websocket'].send(f"{results}")
+            await connected['websocket'].send(json.dumps(results))
         except Exception as e:
         #     await websocket.send(f"初始化失败: {e}")
         # await websocket.send("DLL初始化已发送")

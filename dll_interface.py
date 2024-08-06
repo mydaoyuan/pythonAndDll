@@ -48,7 +48,7 @@ def callback_progress(code, progress):
     print(f"初始化状态: {code}")
 
 def callback_finish(code, status, client_id):
-    status = status.decode('utf-8')  # 假设status是UTF-8编码的字符串
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     global curConfig
     curConfig['client_id'] = client_id
@@ -91,12 +91,13 @@ async def init_msdk(content, json_config):
     
 # MSDK_API void MSDK_StartStreaming(const char* ClientID, const char* JsonConfig, MSDKCallback Callback);
 # 定义回调函数类型---开始直播
-CALLBACK_START_STREAMING = CFUNCTYPE(None, c_int, c_char_p)
-def callback_start_streaming(code, client_id):
+CALLBACK_START_STREAMING = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
+def callback_start_streaming(code, status ,client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    if code == MSDKStatus.MSDK_SUCCESS_STOP_STREAMING.value:
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    if code == MSDKStatus.MSDK_SUCCESS_START_STREAMING.value:
         print(f"开始直播成功: {code}, 客户端ID: {client_id}")
-        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": True, "client_id": client_id})
+        set_futures_status(client_id, futures_start_streaming, {"code": code, "status": status, "success": True, "client_id": client_id})
     else:
         print(f"开始直播失败: {code}, 客户端ID: {client_id}")
         set_futures_status(client_id, futures_start_streaming, {"code": code, "success": False,  "client_id": client_id})
@@ -108,11 +109,15 @@ callback_start_streaming_instance = CALLBACK_START_STREAMING(callback_start_stre
 async def start_streaming(client_id, json_config):
     # 调用DLL中的开始直播函数
     future = asyncio.Future()
-    futures_init_finish[client_id] = future
-    msdk.MSDK_StartStreaming(c_char_p(client_id.encode('utf-8')), c_char_p(json_config.encode('utf-8')), callback_start_streaming_instance)
+    futures_start_streaming[client_id] = future
+    try:
+        msdk.MSDK_StartStreaming(c_char_p(client_id.encode('utf-8')), c_char_p(json_config.encode('utf-8')), callback_start_streaming_instance)
+    except Exception as e:
+        print(f"开始直播 start_streaming 失败: {e}")
     while not future.done():
         await asyncio.sleep(0)
     result = await future
+    print(f"开始start_streaming直播结果===>: {result}")
     return result
     
     

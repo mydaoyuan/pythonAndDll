@@ -1,12 +1,159 @@
-[2024-08-05 23:33:24.958] [info] MSDK instance created.
-[2024-08-05 23:33:24.960] [info] Http Init Success
-[2024-08-05 23:33:24.961] [info] MSDK initialized with config: {"display_ue_window": true, "play_ue_sound": true, "ws_server_port": 26217, "ue_fullpath": "F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe"}
-[2024-08-05 23:33:25.201] [info] DeviceId 00:d8:61:38:18:e0===0000_0000_0000_0000_A428_B703_72B4_00C2.===00000000-0000-0000-0000-00D8613818E0
-[2024-08-05 23:33:25.271] [info] Response data: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
-[2024-08-05 23:33:25.271] [info] ResponseData: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
-[2024-08-05 23:33:25.272] [info] Authorization successful.
-[2024-08-05 23:33:25.272] [info] Parsed JSON parameters successfully.
-[2024-08-05 23:33:25.273] [info] Starting WebSocket server at 26217
-[2024-08-05 23:33:25.293] [info] WebSocket server created successfully.
-[2024-08-05 23:33:26.329] [info] UE process started. Process ID: 13120
-[2024-08-05 23:33:26.330] [info] UE process started successfully.
+[2024-08-06 23:02:01.926] [info] MSDK instance created.
+[2024-08-06 23:02:01.927] [info] Http Init Success
+[2024-08-06 23:02:01.928] [info] MSDK initialized with config: {"display_ue_window": true, "play_ue_sound": true, "ws_server_port": 26217, "ue_fullpath": "F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe"}
+[2024-08-06 23:02:02.205] [info] DeviceId 00:d8:61:38:18:e0===0000_0000_0000_0000_A428_B703_72B4_00C2.===00000000-0000-0000-0000-00D8613818E0
+[2024-08-06 23:02:02.276] [info] Response data: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
+[2024-08-06 23:02:02.276] [info] ResponseData: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
+[2024-08-06 23:02:02.277] [info] Authorization successful.
+[2024-08-06 23:02:02.277] [info] Parsed JSON parameters successfully.
+[2024-08-06 23:02:02.277] [info] Starting WebSocket server at 26217
+[2024-08-06 23:02:02.291] [info] WebSocket server created successfully.
+[2024-08-06 23:02:02.297] [info] UE process started. Process ID: 9652
+[2024-08-06 23:02:02.298] [info] UE process started successfully.
+[2024-08-06 23:02:05.114] [info] LWS_CALLBACK_FILTER_NETWORK_CONNECTION
+[2024-08-06 23:02:05.114] [info] 3df74408b812ed8b97f270bf4ad9cbb3 AddConnection.
+[2024-08-06 23:02:05.221] [info] Received packet from ClientID: 3df74408b812ed8b97f270bf4ad9cbb3, size: 2291, data: {
+	"callbackId": 0,
+	"code": 91,
+	"status": "Init Finish.",
+	"success": true,
+	"data":
+	{
+		"data": [
+			{
+				"name": "xiaogang",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/xiaogang.png",
+				"clothes": [
+					{
+						"name": "ZhiYe"
+					},
+					{
+						"name": "FengYi"
+					},
+					{
+						"name": "KeJi"
+					},
+					{
+						"name": "MaJia"
+					},
+					{
+						"name": "XiFu2"
+					},
+					{
+						"name": "XiuXian"
+					}
+				],
+				"anim": []
+			},
+			{
+				"name": "xiaolan",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/xiaolan.png",
+				"clothes": [
+					{
+						"name": "KeJi"
+					},
+					{
+						"name": "NvPu"
+					},
+					{
+						"name": "QiPao"
+					},
+					{
+						"name": "XueSheng"
+					},
+					{
+						"name": "XiFu"
+					},
+					{
+						"name": "XiuXian"
+					}
+				],
+				"anim": []
+			},
+			{
+				"name": "landudu",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/landudu.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "LuBao",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/lubao.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "normal_red",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-red.png",
+				"clothes": [],
+				"anim": [
+					{
+						"name": "Thanks"
+					},
+					{
+						"name": "Sun"
+					}
+				]
+			},
+			{
+				"name": "normal_blue",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-blue.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "dargon_red",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-red-long.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "dargon_blue",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-blue-long.png",
+				"clothes": [],
+				"anim": []
+			}
+		]
+	},
+	"clientId": "a1c8edfdb8d5c4ade12db2ad08039d82"
+}
+[2024-08-06 23:02:05.231] [info] Updated connection ID from 3df74408b812ed8b97f270bf4ad9cbb3 to a1c8edfdb8d5c4ade12db2ad08039d82.
+[2024-08-06 23:02:06.974] [info] Received packet from ClientID: a1c8edfdb8d5c4ade12db2ad08039d82, size: 292, data: {
+	"callbackId": 1,
+	"code": 101,
+	"status": "Streaming started successfully.",
+	"success": true,
+	"data":
+	{
+		"logMessages": [
+			{
+				"MessageType": "Info",
+				"Message": "RTMP publisher started successfully."
+			}
+		]
+	},
+	"clientId": "a1c8edfdb8d5c4ade12db2ad08039d82"
+}
+[2024-08-06 23:02:06.976] [info] Received packet from ClientID: a1c8edfdb8d5c4ade12db2ad08039d82, size: 291, data: {
+	"callbackId": 1,
+	"code": 101,
+	"status": "Streaming exception.",
+	"success": false,
+	"data":
+	{
+		"logMessages": [
+			{
+				"MessageType": "Error",
+				"Message": "Could not find useful packet. ErrorCode:-11."
+			}
+		]
+	},
+	"clientId": "a1c8edfdb8d5c4ade12db2ad08039d82"
+}
+[2024-08-06 23:02:35.235] [info] Received packet from ClientID: a1c8edfdb8d5c4ade12db2ad08039d82, size: 14, data: heartbeat ping
+[2024-08-06 23:03:05.173] [info] Received packet from ClientID: a1c8edfdb8d5c4ade12db2ad08039d82, size: 14, data: heartbeat ping
+[2024-08-06 23:03:35.200] [info] Received packet from ClientID: a1c8edfdb8d5c4ade12db2ad08039d82, size: 14, data: heartbeat ping
+[2024-08-06 23:03:38.871] [info] MSDK instance destroyed.
+[2024-08-06 23:03:38.871] [info] OnSocketClose.
+[2024-08-06 23:03:38.871] [info] a1c8edfdb8d5c4ade12db2ad08039d82 RemoveConnection.
+[2024-08-06 23:03:38.873] [info] Stopping all UE processes.
