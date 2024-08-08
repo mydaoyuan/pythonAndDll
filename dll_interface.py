@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 executor = ThreadPoolExecutor()
 
 curConfig = {}
-
+websocketAll = {}
 # 定义全局字典来存储不同指令的Future对象
 futures_streaming = {}
 futures_init_finish = {}
@@ -84,6 +84,7 @@ async def init_msdk(content, json_config):
         if init_result:
             try:
                 init_result = ctypes.cast(init_result, c_char_p).value.decode('utf-8')
+                websocketAll[init_result] = content
                 print("Returned data:")
                 print(init_result)
             except Exception as e:
@@ -348,6 +349,7 @@ def callback_change_character_pos(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = status.decode('utf-8')  # 解码角色名
     print(f"更改角色位置: {code}, 客户端ID: {client_id}, info: {status}")
+    websocketAll[client_id]['websocket'].send(json.dumps({"action": "change_character_pos", "client_id": client_id, "code": code, "status": status})) 
 
 callback_change_character_pos_instance = CALLBACK_CHANGE_CHARACTER_POS(callback_change_character_pos)
 

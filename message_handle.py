@@ -1,7 +1,7 @@
 
 import json
 import asyncio
-from dll_interface import init_msdk, speak_by_audio, stop_streaming,change_character,change_background,start_streaming,is_streaming,change_character_scale
+from dll_interface import init_msdk, speak_by_audio, stop_streaming,change_character,change_background,start_streaming,is_streaming,change_character_scale,change_character_pos
 from functools import partial
 
 FRAME_SIZE = 8320  # 每帧固定大小
@@ -90,6 +90,11 @@ async def messageHandler(data, connected):
     if data['action'] == 'change_character_scale':
         # 切换背景
         results = await change_character_scale(connected['client_id'], data['scale'])
+        await connected['websocket'].send(json.dumps(results))
+
+    if data['action'] == 'change_character_pos':
+        # 切换位置
+        results = await change_character_pos(connected['client_id'], data['x'], data['y'])
         await connected['websocket'].send(json.dumps(results))
 
     if data['action'] == 'change_character':
