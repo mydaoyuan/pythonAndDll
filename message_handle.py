@@ -30,7 +30,7 @@ push_config = {
             "qmax": 28,
             "sws_getContext_image_flag": 4,
             "chroma_keying": {
-                "transparent_streaming": True,
+                "transparent_streaming": False,
                 "ue_chroma_keying": False,
                 "ue_chroma_keying_deep": True,
                 "fill_color_rgba": [
