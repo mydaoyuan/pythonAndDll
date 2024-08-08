@@ -259,12 +259,12 @@ CALLBACK_IS_STREAMING = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 def callback_is_streaming(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
-    if code == MSDKStatus.MSDK_SUCCESS_STOP_STREAMING.value:
+    if code == MSDKStatus.MSDK_SUCCESS_GET_IS_STREAMING_DOING.value:
         print(f"查询是否正在推流: {code}, 客户端ID: {client_id}, status: {status}")
-        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": True, "client_id": client_id})
+        set_futures_status(client_id, futures_isStreaming, {"code": code, "success": True, "client_id": client_id})
     else:
         print(f"查询是否正在推流: {code}, 客户端ID: {client_id}, status: {status}")
-        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": False,  "client_id": client_id})
+        set_futures_status(client_id, futures_isStreaming, {"code": code, "success": False,  "client_id": client_id})
 
 
 
@@ -369,10 +369,10 @@ def callback_change_character_scale(code, status, client_id):
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     print(f"更改角色大小: {code}, 客户端ID: {client_id}, info: {status}")
     if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER_SCALE.value:
-        set_futures_status(client_id, futures_change_character, {"code": code, "success": True , "status": status, "client_id": client_id})
+        set_futures_status(client_id, futures_change_character_scale, {"code": code, "success": True , "status": status, "client_id": client_id})
         print(f"更改角色大小: {code},")
     else:
-        set_futures_status(client_id, futures_change_character, {"code": code, "success": False , "client_id": client_id})
+        set_futures_status(client_id, futures_change_character_scale, {"code": code, "success": False , "client_id": client_id})
         print(f"更改角色大小失败: {code},")
 
 callback_change_character_scale_instance = CALLBACK_CHANGE_CHARACTER_SCALE(callback_change_character_scale)

@@ -1,18 +1,18 @@
-[2024-08-08 13:48:41.666] [info] MSDK instance created.
-[2024-08-08 13:48:41.667] [info] Http Init Success
-[2024-08-08 13:48:41.668] [info] MSDK initialized with config: {"display_ue_window": true, "play_ue_sound": true, "ws_server_port": 26217, "ue_fullpath": "F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe"}
-[2024-08-08 13:48:41.948] [info] DeviceId 00:d8:61:38:18:e0===0000_0000_0000_0000_A428_B703_72B4_00C2.===00000000-0000-0000-0000-00D8613818E0
-[2024-08-08 13:48:42.021] [info] Response data: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
-[2024-08-08 13:48:42.021] [info] ResponseData: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
-[2024-08-08 13:48:42.022] [info] Authorization successful.
-[2024-08-08 13:48:42.022] [info] Parsed JSON parameters successfully.
-[2024-08-08 13:48:42.023] [info] Starting WebSocket server at 26217
-[2024-08-08 13:48:42.031] [info] WebSocket server created successfully.
-[2024-08-08 13:48:42.038] [info] UE process started. Process ID: 464
-[2024-08-08 13:48:42.038] [info] UE process started successfully.
-[2024-08-08 13:48:45.418] [info] LWS_CALLBACK_FILTER_NETWORK_CONNECTION
-[2024-08-08 13:48:45.418] [info] 21da3071ba06ba5a30bf07bb7b56a56b AddConnection.
-[2024-08-08 13:48:45.526] [info] Received packet from ClientID: 21da3071ba06ba5a30bf07bb7b56a56b, size: 2291, data: {
+[2024-08-08 14:37:21.248] [info] MSDK instance created.
+[2024-08-08 14:37:21.249] [info] Http Init Success
+[2024-08-08 14:37:21.249] [info] MSDK initialized with config: {"display_ue_window": true, "play_ue_sound": true, "ws_server_port": 26217, "ue_fullpath": "F:/Windows_Release/UE/Windows/RenderBody/Binaries/win64/RenderBody-Win64-Shipping.exe"}
+[2024-08-08 14:37:21.560] [info] DeviceId 00:d8:61:38:18:e0===0000_0000_0000_0000_A428_B703_72B4_00C2.===00000000-0000-0000-0000-00D8613818E0
+[2024-08-08 14:37:21.634] [info] Response data: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
+[2024-08-08 14:37:21.634] [info] ResponseData: {"Status":"SUCCESS","Msg":"启动器分配成功","MachineCapacity":3,"Description":"道远windows"}
+[2024-08-08 14:37:21.635] [info] Authorization successful.
+[2024-08-08 14:37:21.635] [info] Parsed JSON parameters successfully.
+[2024-08-08 14:37:21.635] [info] Starting WebSocket server at 26217
+[2024-08-08 14:37:21.642] [info] WebSocket server created successfully.
+[2024-08-08 14:37:21.847] [info] UE process started. Process ID: 25680
+[2024-08-08 14:37:21.848] [info] UE process started successfully.
+[2024-08-08 14:37:25.125] [info] LWS_CALLBACK_FILTER_NETWORK_CONNECTION
+[2024-08-08 14:37:25.125] [info] ca3f67c6d2b7781c21d565f5cc575871 AddConnection.
+[2024-08-08 14:37:25.232] [info] Received packet from ClientID: ca3f67c6d2b7781c21d565f5cc575871, size: 2291, data: {
 	"callbackId": 0,
 	"code": 91,
 	"status": "Init Finish.",
@@ -115,134 +115,11 @@
 			}
 		]
 	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
+	"clientId": "232d83346d10a591b5f27c5f24ee3490"
 }
-[2024-08-08 13:48:45.535] [info] Updated connection ID from 21da3071ba06ba5a30bf07bb7b56a56b to d3c7eb920ca4cc633c8af49a51c09d83.
-[2024-08-08 13:48:48.484] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 285, data: {
-	"callbackId": 1,
-	"code": 301,
-	"status": "Change character correctly.",
-	"success": true,
-	"data":
-	{
-		"Message": "Change character correctly.",
-		"Character name now": "xiaogang",
-		"With translucent FX now": true
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:48:48.702] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 256, data: {
-	"callbackId": 2,
-	"code": 302,
-	"status": "Character position Changed.",
-	"success": true,
-	"data":
-	{
-		"Message": "Character position Changed.",
-		"Character position now": "X=960 Y=980"
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:48:55.217] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 292, data: {
-	"callbackId": 3,
-	"code": 101,
-	"status": "Streaming started successfully.",
-	"success": true,
-	"data":
-	{
-		"logMessages": [
-			{
-				"MessageType": "Info",
-				"Message": "RTMP publisher started successfully."
-			}
-		]
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:48:55.220] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 291, data: {
-	"callbackId": 3,
-	"code": 101,
-	"status": "Streaming exception.",
-	"success": false,
-	"data":
-	{
-		"logMessages": [
-			{
-				"MessageType": "Error",
-				"Message": "Could not find useful packet. ErrorCode:-11."
-			}
-		]
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:49:15.432] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:49:45.453] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:50:15.497] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:50:45.436] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:51:15.502] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:51:45.453] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:51:51.629] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 306, data: {
-	"callbackId": 3,
-	"code": 101,
-	"status": "Streaming exception.",
-	"success": false,
-	"data":
-	{
-		"logMessages": [
-			{
-				"MessageType": "Warning",
-				"Message": "FFMPEG - Failed to update header with correct duration.\n"
-			}
-		]
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:51:51.630] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 306, data: {
-	"callbackId": 3,
-	"code": 101,
-	"status": "Streaming exception.",
-	"success": false,
-	"data":
-	{
-		"logMessages": [
-			{
-				"MessageType": "Warning",
-				"Message": "FFMPEG - Failed to update header with correct filesize.\n"
-			}
-		]
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:51:51.632] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 297, data: {
-	"callbackId": 3,
-	"code": 101,
-	"status": "Streaming exception.",
-	"success": false,
-	"data":
-	{
-		"logMessages": [
-			{
-				"MessageType": "Warning",
-				"Message": "FFMPEG - 2 frames left in the queue on closing\n"
-			}
-		]
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:51:51.737] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 193, data: {
-	"callbackId": 4,
-	"code": 102,
-	"status": "Streaming stopped successfully.",
-	"success": true,
-	"data":
-	{
-		"logMessages": []
-	},
-	"clientId": "d3c7eb920ca4cc633c8af49a51c09d83"
-}
-[2024-08-08 13:52:15.549] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:52:45.439] [info] Received packet from ClientID: d3c7eb920ca4cc633c8af49a51c09d83, size: 14, data: heartbeat ping
-[2024-08-08 13:52:47.646] [info] MSDK instance destroyed.
-[2024-08-08 13:52:47.646] [info] OnSocketClose.
-[2024-08-08 13:52:47.647] [info] d3c7eb920ca4cc633c8af49a51c09d83 RemoveConnection.
-[2024-08-08 13:52:47.648] [info] Stopping all UE processes.
+[2024-08-08 14:37:25.240] [info] Updated connection ID from ca3f67c6d2b7781c21d565f5cc575871 to 232d83346d10a591b5f27c5f24ee3490.
+[2024-08-08 14:37:55.137] [info] Received packet from ClientID: 232d83346d10a591b5f27c5f24ee3490, size: 14, data: heartbeat ping
+[2024-08-08 14:38:01.267] [info] MSDK instance destroyed.
+[2024-08-08 14:38:01.268] [info] OnSocketClose.
+[2024-08-08 14:38:01.268] [info] 232d83346d10a591b5f27c5f24ee3490 RemoveConnection.
+[2024-08-08 14:38:01.269] [info] Stopping all UE processes.
