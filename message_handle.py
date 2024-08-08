@@ -81,10 +81,11 @@ async def messageHandler(data, connected):
     if data['action'] == 'change_character':
         # 切换角色
         results = await change_character(connected['client_id'], data['character'])
-        await connected['websocket'].send(f"{results}")
+        await connected['websocket'].send(json.dumps(results))
 
     if data['action'] == 'start_streaming':
-        # 切换角色
+        # 开始推流
+        print("开始推流")
         results = await start_streaming(connected['client_id'], json.dumps(push_config))
         print(f"推流结果: {results}")
         await connected['websocket'].send(json.dumps(results))

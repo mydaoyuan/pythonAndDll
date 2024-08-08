@@ -55,16 +55,17 @@ def callback_finish(code, status, client_id):
     print(f"初始化完成: {code}, {MSDKStatus.MSDK_SUCCESS_INIT.value} ")
     print(f"初始化完成: {curConfig['id']}, 客户端ID: {client_id}")
     if code == MSDKStatus.MSDK_SUCCESS_INIT.value:
-        set_futures_status(curConfig['id'], futures_init_finish, {"code": code, "success": True , "status": status, "client_id": client_id})
+        set_futures_status(client_id, futures_init_finish, {"code": code, "success": True , "status": status, "client_id": client_id})
         print(f"初始化成功: {status}, 客户端ID: {client_id}")
         # change_character(client_id, "xiaogang")
     else:
-        set_futures_status(curConfig['id'], futures_init_finish, {"code": code, "success": False , "client_id": client_id})
+        set_futures_status(client_id, futures_init_finish, {"code": code, "success": False , "client_id": client_id})
         print(f"初始化失败: {status}, 客户端ID: {client_id}")
 
 # 创建回调函数实例---初始化
 callback_progress_instance = CALLBACK_PROGRESS(callback_progress)
 callback_finish_instance = CALLBACK_FINISH(callback_finish)
+msdk.MSDK_Init.restype = c_char_p
 
 # 初始化函数
 async def init_msdk(content, json_config):
@@ -74,9 +75,19 @@ async def init_msdk(content, json_config):
     print(f"初始化DLL:init_msdk run ")
     try:
         future = asyncio.Future()
-        futures_init_finish[content['id']] = future
-        msdk.MSDK_Init(c_char_p(json_config.encode('utf-8')), callback_progress_instance, callback_finish_instance)
+        init_result = msdk.MSDK_Init(c_char_p(json_config.encode('utf-8')), callback_progress_instance, callback_finish_instance)
+        # 输出返回的 c_char_p 类型的数据
+        if init_result:
+            try:
+                init_result = ctypes.cast(init_result, c_char_p).value.decode('utf-8')
+                print("Returned data:")
+                print(init_result)
+            except Exception as e:
+                print(f"Error occurred: {e}")
+        else:
+            print("No data returned or error occurred")
         await_start_time = time.time()
+        futures_init_finish[init_result] = future
         while not future.done():
             await asyncio.sleep(0)
         result = await future
@@ -271,10 +282,10 @@ def callback_change_character(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = status.decode('utf-8')  # 解码角色名
     if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER.value:
-        set_futures_status(curConfig['id'], futures_change_character, {"code": code, "success": True , "status": status, "client_id": client_id})
+        set_futures_status(client_id, futures_change_character, {"code": code, "success": True , "status": status, "client_id": client_id})
         print(f"切换角色成功: {code},")
     else:
-        set_futures_status(curConfig['id'], futures_change_character, {"code": code, "success": False , "client_id": client_id})
+        set_futures_status(client_id, futures_change_character, {"code": code, "success": False , "client_id": client_id})
         print(f"切换角色失败: {code},")
     print(f"切换角色: {code}, 客户端ID: {client_id}, info: {status}")
     change_character_pos(client_id, int(1920 / 2) , 1080 - 100)
