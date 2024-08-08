@@ -17,9 +17,15 @@ futures_start_streaming = {}
 futures_stop_streaming = {}
 futures_isStreaming = {}
 futures_change_character = {}
+futures_change_chara_pos = {}
+futures_change_character_cloth = {}
 futures_change_background = {}
 futures_play_character_anim = {}
 futures_change_character_scale = {}
+futures_add_prop = {}
+futures_remove_prop = {}
+futures_speak_by_audio_file = {}
+futures_shutdown = {}
 
 def set_futures_status(client_id, futures_obj, data):
     if client_id in futures_obj:
@@ -210,48 +216,6 @@ async def stop_streaming(client_id):
     print(f"开始start_streaming直播结果===>: {result}")
     return result
 
-
-# MSDK_API void MSDK_ChangeBackground(const char* ClientID, const char* Type, const char* Url, MSDKCallback CallBack);
-# 回调函数 typedef void(*MSDKCallback)(MSDKStatusCode /*Code*/, const char* /*Status*/, const char* /*ClientID*/);
-# 更改背景
-
-CALLBACK_CHANGE_BACKGROUND = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
-def callback_change_background(code, status, client_id):
-    client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
-    client_id = client_id.decode('utf-8')  # 解码客户端ID
-    print(f"更改背景: {code}, 客户端ID: {client_id}, info: {status}")
-    if code == MSDKStatus.MSDK_SUCCESS_STOP_STREAMING.value:
-        print(f"更改背景: {code}, 客户端ID: {client_id}")
-        set_futures_status(client_id, futures_change_background, {"code": code, "status": status, "success": True, "client_id": client_id})
-    else:
-        set_futures_status(client_id, futures_change_background, {"code": code, "success": False, "status": status, "client_id": client_id})
-        print(f"更改背景失败: {code}, 客户端ID: {client_id}")
-
-callback_change_background_instance = CALLBACK_CHANGE_BACKGROUND(callback_change_background)
-# ● ClientID：客户端 ID。
-# ● Type：背景类型。
-#     ○ image ：图片类型，gif图，或其他格式的静态图
-#     ○ video：视频类型，支持H264编码的视频url（linux中目前还无法播放）
-#     ■ https://cesium.com/public/SandcastleSampleData/big-buck-bunny_trailer.mp4
-# ● Url：背景 URL 地址。Consistent with the current background image URL
-# ● CallBack：更换结果的回调函数。
-async def change_background(client_id, type, url):
-            # 调用DLL中的开始直播函数
-    future = asyncio.Future()
-    futures_change_background[client_id] = future
-    try:
-        msdk.MSDK_ChangeBackground(c_char_p(client_id.encode('utf-8')), c_char_p(type.encode('utf-8')), c_char_p(url.encode('utf-8')), callback_change_background_instance)
-    except Exception as e:
-        print(f"停止直播 start_streaming 失败: {e}")
-    while not future.done():
-        await asyncio.sleep(0)
-    result = await future
-    print(f"开始start_streaming直播结果===>: {result}")
-    return result
-
-
-
 # MSDK_API void MSDK_IsStreaming(const char* ClientID, MSDKCallback Callback);
 # typedef void(*MSDKCallback)(MSDKStatusCode /*Code*/, const char* /*Status*/, const char* /*ClientID*/);
 
@@ -347,15 +311,25 @@ async def change_character(client_id, name):
 CALLBACK_CHANGE_CHARACTER_POS = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 def callback_change_character_pos(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = status.decode('utf-8')  # 解码角色名
-    print(f"更改角色位置: {code}, 客户端ID: {client_id}, info: {status}")
-    websocketAll[client_id]['websocket'].send(json.dumps({"action": "change_character_pos", "client_id": client_id, "code": code, "status": status})) 
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER.value:
+        set_futures_status(client_id, futures_change_chara_pos, {"code": code, "success": True , "status": status, "client_id": client_id})
+        print(f"更改角色位置: {code},")
+    else:
+        set_futures_status(client_id, futures_change_chara_pos, {"code": code, "success": False , "client_id": client_id})
+        print(f"更改角色位置失败: {code},")
 
 callback_change_character_pos_instance = CALLBACK_CHANGE_CHARACTER_POS(callback_change_character_pos)
 
-def change_character_pos(client_id, x, y):
+async def change_character_pos(client_id, x, y):
+    future = asyncio.Future()
+    futures_change_chara_pos[client_id] = future
     # 调用DLL中的更改角色位置函数
     msdk.MSDK_ChangeCharacterPos(c_char_p(client_id.encode('utf-8')), x, y, callback_change_character_pos_instance)    
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
     
 
 # MSDK_ChangeCharacterScale
@@ -397,14 +371,27 @@ async def change_character_scale(client_id, scale):
 CALLBACK_CHANGE_CHARACTER_CLOTH = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 def callback_change_character_cloth(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = status.decode('utf-8')  # 解码角色名
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     print(f"更改角色服装: {code}, 客户端ID: {client_id}, info: {status}")
+    if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER_CLOTH.value:
+        set_futures_status(client_id, futures_change_character_cloth, {"code": code, "success": True , "status": status, "client_id": client_id})
+        print(f"更改角色服装: {code},")
+    else:
+        set_futures_status(client_id, futures_change_character_cloth, {"code": code, "success": False , "client_id": client_id})
+        print(f"更改角色服装失败: {code},")
 
 callback_change_character_cloth_instance = CALLBACK_CHANGE_CHARACTER_CLOTH(callback_change_character_cloth)
 
-def change_character_cloth(client_id, cloth_name):
+async def change_character_cloth(client_id, cloth_name):
     # 调用DLL中的更改角色服装函数
+    # futures_change_character_cloth
+    future = asyncio.Future()
+    futures_change_character_cloth[client_id] = future
     msdk.MSDK_ChangeCharacterCloth(c_char_p(client_id.encode('utf-8')), c_char_p(cloth_name.encode('utf-8')), callback_change_character_cloth_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
 
 # 道具管理
 #MSDK_API void MSDK_AddProp(const char* ClientID, const char* Url, int POS_X, int POS_Y, int SIZE_X, int SIZE_Y, MSDKCallback CallBack);
@@ -421,14 +408,26 @@ CALLBACK_ADD_PROP = CFUNCTYPE(None, c_int, c_char_p)
 
 def callback_add_prop(code, status):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = status.decode('utf-8')  # 解码角色名
-    print(f"添加道具: {code},  info: {status}")
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    if code == MSDKStatus.MSDK_SUCCESS_ADD_PROP.value:
+        set_futures_status(client_id, futures_add_prop, {"code": code, "success": True , "status": status, "client_id": client_id})
+        print(f"添加道具: {code},")
+    else:
+        set_futures_status(client_id, futures_add_prop, {"code": code, "success": False , "client_id": client_id})
+        print(f"添加道具失败: {code},")
 
 callback_add_prop_instance = CALLBACK_ADD_PROP(callback_add_prop)
 
-def add_prop(client_id, url, pos_x, pos_y, size_x, size_y):
+async def add_prop(client_id, url, pos_x, pos_y, size_x, size_y):
     # 调用DLL中的添加道具函数
+    # futures_add_prop
+    future = asyncio.Future()
+    futures_add_prop[client_id] = future
     msdk.MSDK_AddProp(c_char_p(client_id.encode('utf-8')), c_char_p(url.encode('utf-8')), pos_x, pos_y, size_x, size_y, callback_add_prop_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
 
 # 移除道具
 # MSDK_API void MSDK_RemoveProp(const char* ClientID, int PropId, MSDKCallback CallBack);
@@ -443,14 +442,26 @@ CALLBACK_REMOVE_PROP = CFUNCTYPE(None, c_int, c_char_p)
 
 def callback_remove_prop(code, status):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = status.decode('utf-8')  # 解码角色名
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     print(f"移除道具: {code},  info: {status}")
+    if code == MSDKStatus.MSDK_SUCCESS_REMOVE_PROP.value:
+        set_futures_status(client_id, futures_remove_prop, {"code": code, "success": True , "status": status, "client_id": client_id})
+        print(f"移除道具: {code},")
+    else:
+        set_futures_status(client_id, futures_remove_prop, {"code": code, "success": False , "client_id": client_id})
+        print(f"移除道具失败: {code},")
 
 callback_remove_prop_instance = CALLBACK_REMOVE_PROP(callback_remove_prop)
 
-def remove_prop(client_id, prop_id):
+async def remove_prop(client_id, prop_id):
     # 调用DLL中的移除道具函数
+    future = asyncio.Future()
+    futures_remove_prop[client_id] = future
     msdk.MSDK_RemoveProp(c_char_p(client_id.encode('utf-8')), prop_id, callback_remove_prop_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
 
 
 # 背景管理
@@ -484,32 +495,59 @@ CALLBACK_CHANGE_BACKGROUND = CFUNCTYPE(None, c_int, c_char_p, c_char_p, c_char_p
 
 def callback_change_background(code, status, success, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = status.decode('utf-8')  # 解码角色名
-    print(f"更改背景: {code},  info: {status} ,success: {success} , id: {client_id}")
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    success = success.decode('utf-8')  # 假设status是UTF-8编码的字符串
+    print(success)
+    if code == MSDKStatus.MSDK_SUCCESS_CHANGE_BACKGROUND.value:
+        set_futures_status(client_id, futures_change_background, {"code": code, "success": True , "status": status, "client_id": client_id})
+        print(f"更改背景: {code},")
+    else:
+        set_futures_status(client_id, futures_change_background, {"code": code, "success": False , "client_id": client_id})
+        print(f"更改背景失败: {code},")
 
 callback_change_background_instance = CALLBACK_CHANGE_BACKGROUND(callback_change_background)
 
-def change_background(client_id, type, url):
+async def change_background(client_id, type, url):
     # 调用DLL中的更改背景函数
+    future = asyncio.Future()
+    futures_change_background[client_id] = future
     msdk.MSDK_ChangeBackground(c_char_p(client_id.encode('utf-8')), c_char_p(type.encode('utf-8')), c_char_p(url.encode('utf-8')), callback_change_background_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
 
 
 # # MSDK_SpeakByAudioByFile
 # # MSDK_API void MSDK_SpeakByAudioFile(const char* ClientID, const char* AudioPath, MSDKCallback CallBack);
 # #typedef void(*MSDKCallback)(MSDKStatusCode /*Code*/, const char* /*Status*/, const char* /*ClientID*/);
 
-# # 语音说话
+# # 语音文件说话
+CALLBACK_SPEAK_BY_AUDIO_FILE = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
+def callback_speak_by_audio_file(code, status, client_id):
+    client_id = client_id.decode('utf-8')  # 解码客户端ID
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    if code == MSDKStatus.MSDK_SUCCESS_SPEAK_BY_AUDIO_FINISH.value:
+        set_futures_status(client_id, futures_speak_by_audio_file, {"code": code, "success": True , "status": status, "client_id": client_id})
+        print(f"文件说话: {code},")
+    else:
+        set_futures_status(client_id, futures_speak_by_audio_file, {"code": code, "success": False , "client_id": client_id})
+        print(f"文件说话失败: {code},")
 
-# CALLBACK_SPEAK_BY_AUDIO_FILE = CFUNCTYPE(None, c_int)
+callback_speak_by_audio_file_instance = CALLBACK_SPEAK_BY_AUDIO_FILE(callback_speak_by_audio_file)
 
-# def callback_speak_by_audio_file(code, status, client_id):
-#     client_id = client_id.decode('utf-8')  # 解码客户端ID
-#     status = status.decode('utf-8')  # 解码角色名
-#     print(f"语音说话: {code},  info: {status} , id: {client_id}")
+async def speak_by_audio_file(client_id, audio_path):
+        # 调用DLL中的更改背景函数
+    future = asyncio.Future()
+    futures_speak_by_audio_file[client_id] = future
+    msdk.MSDK_SpeakByAudioFile(c_char_p(client_id.encode('utf-8')), c_char_p(audio_path.encode('utf-8')), callback_speak_by_audio_file_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result
+    # 调用DLL中的语音文件说话函数
 
-# MSDK_Shutdown
-# MSDK_API void MSDK_Shutdown(const char* ClientID, MSDKCallback CallBack);
-# typedef void(*MSDKCallback)(MSDKStatusCode /*Code*/, const char* /*Status*/, const char* /*ClientID*/);
+
 
 # 关闭SDK
 
@@ -517,11 +555,22 @@ CALLBACK_SHUTDOWN = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 
 def callback_shutdown(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = status.decode('utf-8')  # 解码角色名
-    print(f"关闭SDK: {code},  info: {status} , id: {client_id}")
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    if code == MSDKStatus.MSDK_SUCCESS_SHUTDOWN.value:
+        set_futures_status(client_id, futures_shutdown, {"code": code, "success": True , "status": status, "client_id": client_id})
+        print(f"关闭SDK: {code},")
+    else:
+        set_futures_status(client_id, futures_shutdown, {"code": code, "success": False , "client_id": client_id})
+        print(f"关闭SDK失败: {code},")
 
 callback_shutdown_instance = CALLBACK_SHUTDOWN(callback_shutdown)
 
-def shutdown(client_id):
+async def shutdown(client_id):
     # 调用DLL中的关闭SDK函数
+    future = asyncio.Future()
+    futures_shutdown[client_id] = future
     msdk.MSDK_Shutdown(c_char_p(client_id.encode('utf-8')), callback_shutdown_instance)
+    while not future.done():
+        await asyncio.sleep(0)
+    result = await future
+    return result

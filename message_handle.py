@@ -1,7 +1,7 @@
 
 import json
 import asyncio
-from dll_interface import init_msdk, speak_by_audio, stop_streaming,change_character,change_background,start_streaming,is_streaming,change_character_scale,change_character_pos
+from dll_interface import remove_prop, add_prop,init_msdk, speak_by_audio, stop_streaming,change_character,change_background,start_streaming,is_streaming,change_character_scale,change_character_pos,change_character_cloth
 from functools import partial
 
 FRAME_SIZE = 8320  # 每帧固定大小
@@ -95,6 +95,21 @@ async def messageHandler(data, connected):
     if data['action'] == 'change_character_pos':
         # 切换位置
         results = await change_character_pos(connected['client_id'], data['x'], data['y'])
+        await connected['websocket'].send(json.dumps(results))
+
+    if data['action'] == 'change_character_cloth':
+        # 切换衣服
+        results = await change_character_cloth(connected['client_id'], data['clothName'])
+        await connected['websocket'].send(json.dumps(results))
+
+    if data['action'] == 'add_prop':
+        # 切换衣服
+        results = await add_prop(connected['client_id'], data['url'],data['pos_x'], data['pos_y'], data['size_x'], data['size_y'])
+        await connected['websocket'].send(json.dumps(results))
+
+    if data['action'] == 'remove_prop':
+        # 切换衣服
+        results = await remove_prop(connected['client_id'], data['prop_id'])
         await connected['websocket'].send(json.dumps(results))
 
     if data['action'] == 'change_character':
