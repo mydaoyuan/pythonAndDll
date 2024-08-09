@@ -253,7 +253,6 @@ CALLBACK_PLAY_CHARACTER_ANIM = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 def callback_play_character_anim(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
-    client_id = client_id.decode('utf-8')  # 解码客户端ID
     print(f"播放角色指定动画: {code}, 客户端ID: {client_id}, info: {status}")
     if code == MSDKStatus.MSDK_SUCCESS_STOP_STREAMING.value:
         print(f"播放角色指定动画: {code}, 客户端ID: {client_id}")
@@ -288,7 +287,7 @@ def callback_change_character(code, status, client_id):
         set_futures_status(client_id, futures_change_character, {"code": code, "success": False , "client_id": client_id})
         print(f"切换角色失败: {code},")
     print(f"切换角色: {code}, 客户端ID: {client_id}, info: {status}")
-    change_character_pos(client_id, int(1920 / 2) , 1080 - 100)
+    # change_character_pos(client_id, int(1920 / 2) , 1080 - 100)
     # start_streaming(client_id, json.dumps(push_config))
     
 # xiaogang    
@@ -312,7 +311,7 @@ CALLBACK_CHANGE_CHARACTER_POS = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 def callback_change_character_pos(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
-    if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER.value:
+    if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER_POSITION.value:
         set_futures_status(client_id, futures_change_chara_pos, {"code": code, "success": True , "status": status, "client_id": client_id})
         print(f"更改角色位置: {code},")
     else:
@@ -407,13 +406,13 @@ async def change_character_cloth(client_id, cloth_name):
 CALLBACK_ADD_PROP = CFUNCTYPE(None, c_int, c_char_p)
 
 def callback_add_prop(code, status):
-    client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    print(f"添加道具: {code},  info: {status}")
     if code == MSDKStatus.MSDK_SUCCESS_ADD_PROP.value:
-        set_futures_status(client_id, futures_add_prop, {"code": code, "success": True , "status": status, "client_id": client_id})
+        set_futures_status(status["clientId"], futures_add_prop, {"code": code, "success": True , "status": status, "client_id": status["clientId"]})
         print(f"添加道具: {code},")
     else:
-        set_futures_status(client_id, futures_add_prop, {"code": code, "success": False , "client_id": client_id})
+        set_futures_status(status["clientId"], futures_add_prop, {"code": code, "success": False , "client_id": status["clientId"]})
         print(f"添加道具失败: {code},")
 
 callback_add_prop_instance = CALLBACK_ADD_PROP(callback_add_prop)
@@ -441,14 +440,13 @@ async def add_prop(client_id, url, pos_x, pos_y, size_x, size_y):
 CALLBACK_REMOVE_PROP = CFUNCTYPE(None, c_int, c_char_p)
 
 def callback_remove_prop(code, status):
-    client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     print(f"移除道具: {code},  info: {status}")
     if code == MSDKStatus.MSDK_SUCCESS_REMOVE_PROP.value:
-        set_futures_status(client_id, futures_remove_prop, {"code": code, "success": True , "status": status, "client_id": client_id})
+        set_futures_status(status["clientId"], futures_remove_prop, {"code": code, "success": True , "status": status, "client_id": status["clientId"]})
         print(f"移除道具: {code},")
     else:
-        set_futures_status(client_id, futures_remove_prop, {"code": code, "success": False , "client_id": client_id})
+        set_futures_status(status["clientId"], futures_remove_prop, {"code": code, "success": False , "client_id": status["clientId"]})
         print(f"移除道具失败: {code},")
 
 callback_remove_prop_instance = CALLBACK_REMOVE_PROP(callback_remove_prop)
@@ -494,6 +492,7 @@ async def remove_prop(client_id, prop_id):
 CALLBACK_CHANGE_BACKGROUND = CFUNCTYPE(None, c_int, c_char_p, c_char_p, c_char_p)
 
 def callback_change_background(code, status, success, client_id):
+    print(f"更改背景===>callback_change_background: {code}, 客户端ID: {client_id}, info: {status}")
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     success = success.decode('utf-8')  # 假设status是UTF-8编码的字符串
