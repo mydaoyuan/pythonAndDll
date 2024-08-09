@@ -10,3 +10,143 @@
 [2024-08-09 00:48:33.746] [info] WebSocket server created successfully.
 [2024-08-09 00:48:33.954] [info] UE process started. Process ID: 23216
 [2024-08-09 00:48:33.955] [info] UE process started successfully.
+[2024-08-09 00:48:37.019] [info] LWS_CALLBACK_FILTER_NETWORK_CONNECTION
+[2024-08-09 00:48:37.127] [info] c802955e89a80d8ee49d6bcf6d86e93f AddConnection.
+[2024-08-09 00:48:37.236] [info] Received packet from ClientID: c802955e89a80d8ee49d6bcf6d86e93f, size: 2291, data: {
+	"callbackId": 0,
+	"code": 91,
+	"status": "Init Finish.",
+	"success": true,
+	"data":
+	{
+		"data": [
+			{
+				"name": "xiaogang",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/xiaogang.png",
+				"clothes": [
+					{
+						"name": "ZhiYe"
+					},
+					{
+						"name": "FengYi"
+					},
+					{
+						"name": "KeJi"
+					},
+					{
+						"name": "MaJia"
+					},
+					{
+						"name": "XiFu2"
+					},
+					{
+						"name": "XiuXian"
+					}
+				],
+				"anim": []
+			},
+			{
+				"name": "xiaolan",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/xiaolan.png",
+				"clothes": [
+					{
+						"name": "KeJi"
+					},
+					{
+						"name": "NvPu"
+					},
+					{
+						"name": "QiPao"
+					},
+					{
+						"name": "XueSheng"
+					},
+					{
+						"name": "XiFu"
+					},
+					{
+						"name": "XiuXian"
+					}
+				],
+				"anim": []
+			},
+			{
+				"name": "landudu",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/landudu.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "LuBao",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/lubao.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "normal_red",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-red.png",
+				"clothes": [],
+				"anim": [
+					{
+						"name": "Thanks"
+					},
+					{
+						"name": "Sun"
+					}
+				]
+			},
+			{
+				"name": "normal_blue",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-blue.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "dargon_red",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-red-long.png",
+				"clothes": [],
+				"anim": []
+			},
+			{
+				"name": "dargon_blue",
+				"image": "https://yiv-hz-1.oss-cn-hangzhou.aliyuncs.com/prod/metahcloud/digitalhuman/photograph/caitong-blue-long.png",
+				"clothes": [],
+				"anim": []
+			}
+		]
+	},
+	"clientId": "d088c9924b204b2a61750bf8d6bd4033"
+}
+[2024-08-09 00:48:37.244] [info] Updated connection ID from c802955e89a80d8ee49d6bcf6d86e93f to d088c9924b204b2a61750bf8d6bd4033.
+[2024-08-09 00:48:41.609] [info] Received packet from ClientID: d088c9924b204b2a61750bf8d6bd4033, size: 285, data: {
+	"callbackId": 1,
+	"code": 301,
+	"status": "Change character correctly.",
+	"success": true,
+	"data":
+	{
+		"Message": "Change character correctly.",
+		"Character name now": "xiaogang",
+		"With translucent FX now": true
+	},
+	"clientId": "d088c9924b204b2a61750bf8d6bd4033"
+}
+[2024-08-09 00:48:46.960] [info] Received packet from ClientID: d088c9924b204b2a61750bf8d6bd4033, size: 256, data: {
+	"callbackId": 2,
+	"code": 302,
+	"status": "Character position Changed.",
+	"success": true,
+	"data":
+	{
+		"Message": "Character position Changed.",
+		"Character position now": "X=900 Y=900"
+	},
+	"clientId": "d088c9924b204b2a61750bf8d6bd4033"
+}
+[2024-08-09 00:49:07.106] [info] Received packet from ClientID: d088c9924b204b2a61750bf8d6bd4033, size: 14, data: heartbeat ping
+[2024-08-09 00:49:37.104] [info] Received packet from ClientID: d088c9924b204b2a61750bf8d6bd4033, size: 14, data: heartbeat ping
+[2024-08-09 00:50:07.084] [info] Received packet from ClientID: d088c9924b204b2a61750bf8d6bd4033, size: 14, data: heartbeat ping
+[2024-08-09 00:50:25.893] [info] Stopping UE with GUID: d088c9924b204b2a61750bf8d6bd4033
+[2024-08-09 00:50:25.894] [info] UE process with GUID: d088c9924b204b2a61750bf8d6bd4033 terminated successfully.
+[2024-08-09 00:50:26.038] [info] OnSocketClose.
+[2024-08-09 00:50:26.038] [info] d088c9924b204b2a61750bf8d6bd4033 RemoveConnection.
