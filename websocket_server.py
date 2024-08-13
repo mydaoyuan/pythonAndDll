@@ -114,6 +114,8 @@ async def start_websocket_client(uri):
                 data = json.loads(message)
                 print(f"收到websocket消息: {data}")
                 await messageHandler(data, connected[random_id_str])
+        except Exception as e:
+             print(f"发生了意外的异常: {e}")
         except websockets.exceptions.ConnectionClosed as e:
             # 连接关闭 清理资源
             print(f"WebSocket连接关闭: {e}")
