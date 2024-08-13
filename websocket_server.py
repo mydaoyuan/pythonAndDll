@@ -12,11 +12,16 @@ import uuid
 import wave
 
 # 读取 JSON 文件
-with open('config.json', 'r') as config_file:
+with open('config-dev.json', 'r') as config_file:
     config = json.load(config_file)
 redis_host = config['REDIS_HOST']
 redis_port = config['REDIS_PORT']
 redis_password = config['REDIS_PASSWORD']
+
+# async def messageHandler(data, connection_info):
+#     await asyncio.sleep(0.1)
+#     print(f"收到消息: {data}")
+
 def initialize_audio_file(client_id):
     # 确保目录存在
     if not os.path.exists('audio_logs'):

@@ -65,7 +65,7 @@ def callback_finish(code, status, client_id):
     print(f"初始化完成: {code}, {MSDKStatus.MSDK_SUCCESS_INIT.value} ")
     print(f"初始化完成: {curConfig['id']}, 客户端ID: {client_id}")
     if code == MSDKStatus.MSDK_SUCCESS_INIT.value:
-        set_futures_status(client_id, futures_init_finish, {"code": code, "success": True , "status": status, "client_id": client_id})
+        set_futures_status(client_id, futures_init_finish, {"code": code, "success": True , "status": status, 'name': 'init', "client_id": client_id})
         print(f"初始化成功: {status}, 客户端ID: {client_id}")
         # change_character(client_id, "xiaogang")
     else:
