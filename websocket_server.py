@@ -114,19 +114,24 @@ async def start_websocket_client(uri):
                 data = json.loads(message)
                 print(f"收到websocket消息: {data}")
                 await messageHandler(data, connected[random_id_str])
+            print("WebSocket连接正常关闭")  # 添加这行来确认循环是否正常结束
+            await clearnWebscoket(random_id_str)
         except Exception as e:
              print(f"发生了意外的异常: {e}")
+             await clearnWebscoket(random_id_str)
         except websockets.exceptions.ConnectionClosed as e:
-            # 连接关闭 清理资源
-            print(f"WebSocket连接关闭: {e}")
-            await messageHandler({
-                "action": "shutdown"
-            }, connected[random_id_str])
-            # 清理 connected[random_id_str]
-            if random_id_str in connected:
-                del connected[random_id_str]
+            await clearnWebscoket(random_id_str)
             print(f"WebSocket connection closed with error: {e}")
 
+async def clearnWebscoket(random_id_str):
+    print(f"WebSocket连接关闭")
+    await messageHandler({
+        "action": "shutdown"
+    }, connected[random_id_str])
+    # 清理 connected[random_id_str]
+    if random_id_str in connected:
+        del connected[random_id_str]
+    print(f"WebSocket connection closed with clearnWebscoket")
 
 
 async def main():
