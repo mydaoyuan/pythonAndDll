@@ -10,8 +10,8 @@ UE_PROT = 26217
 push_config = {
             "rtmp_address": "rtmp://121.41.5.20:1937/live/tang",
             "resolution": {
-                "width": 1920,
-                "height": 1080
+                "width": 1080,
+                "height": 1920
             },
             "framerate": 30,
             "videoBitrate": 2048000,
@@ -30,7 +30,7 @@ push_config = {
             "qmax": 28,
             "sws_getContext_image_flag": 4,
             "chroma_keying": {
-                "transparent_streaming": False,
+                "transparent_streaming": True,
                 "ue_chroma_keying": False,
                 "ue_chroma_keying_deep": True,
                 "fill_color_rgba": [
@@ -125,6 +125,7 @@ async def messageHandler(data, connected):
     if data['action'] == 'start_streaming':
         # 开始推流
         print("开始推流")
+        push_config['rtmp_address'] = data['pushurl']
         results = await start_streaming(connected['client_id'], json.dumps(push_config))
         print(f"推流结果: {results}")
         await connected['websocket'].send(json.dumps(results))

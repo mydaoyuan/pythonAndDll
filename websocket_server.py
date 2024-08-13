@@ -107,7 +107,7 @@ async def start_websocket_client(uri):
         try:
             async for message in websocket:
                 data = json.loads(message)
-                print(f"收到websocket消息: {data['type']}")
+                print(f"收到websocket消息: {data}")
                 await messageHandler(data, connected[random_id_str])
         except websockets.exceptions.ConnectionClosed as e:
             print(f"WebSocket connection closed with error: {e}")
