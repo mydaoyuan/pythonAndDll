@@ -115,7 +115,6 @@ async def messageHandler(data, connected):
     if data['action'] == 'shutdown':
         # 结束UE
         results = await shutdown(connected['client_id'])
-        await connected['websocket'].send(json.dumps(results))
 
     if data['action'] == 'change_character':
         # 切换角色
