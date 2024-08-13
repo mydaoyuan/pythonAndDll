@@ -115,6 +115,14 @@ async def start_websocket_client(uri):
                 print(f"收到websocket消息: {data}")
                 await messageHandler(data, connected[random_id_str])
         except websockets.exceptions.ConnectionClosed as e:
+            # 连接关闭 清理资源
+            print(f"WebSocket连接关闭: {e}")
+            await messageHandler({
+                "action": "shutdown"
+            }, connected[random_id_str])
+            # 清理 connected[random_id_str]
+            if random_id_str in connected:
+                del connected[random_id_str]
             print(f"WebSocket connection closed with error: {e}")
 
 
