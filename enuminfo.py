@@ -1,7 +1,8 @@
 from enum import Enum, auto
 
 class MSDKStatus(Enum):
-	MSDK_SUCCESS_INIT_AUTH = 0		# Init授权成功
+	MSDK_SUCCESS_INIT_HOTPATCH_UPDATE= 0
+	MSDK_SUCCESS_INIT_AUTH= auto()		# Init授权成功
 	MSDK_SUCCESS_INIT_JSON_PARSE= auto()			# InitJSON解析成功
 	MSDK_SUCCESS_INIT_WS_SERVER= auto()			# InitMSDK创建WS服务器成功
 	MSDK_SUCCESS_INIT_STARTUE= auto()				# InitUE启动成功

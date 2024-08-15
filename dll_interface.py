@@ -493,14 +493,12 @@ async def remove_prop(client_id, prop_id):
 #         ■ Background now：当前使用的背景URL
 #     ○ success：是否成功
 #     ○ clientId：返回客户端ID
-CALLBACK_CHANGE_BACKGROUND = CFUNCTYPE(None, c_int, c_char_p, c_char_p, c_char_p)
+CALLBACK_CHANGE_BACKGROUND = CFUNCTYPE(None, c_int, c_char_p, c_char_p)
 
-def callback_change_background(code, status, success, client_id):
+def callback_change_background(code, status, client_id):
     print(f"更改背景===>callback_change_background: {code}, 客户端ID: {client_id}, info: {status}")
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
-    success = success.decode('utf-8')  # 假设status是UTF-8编码的字符串
-    print(success)
     if code == MSDKStatus.MSDK_SUCCESS_CHANGE_BACKGROUND.value:
         set_futures_status(client_id, futures_change_background, {"code": code, "success": True , "status": status, "client_id": client_id})
         print(f"更改背景: {code},")
