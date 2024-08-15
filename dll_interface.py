@@ -25,6 +25,7 @@ futures_change_character_scale = {}
 futures_add_prop = {}
 futures_remove_prop = {}
 futures_speak_by_audio_file = {}
+futures_speak_by_audio_stream = {}
 futures_shutdown = {}
 
 def set_futures_status(client_id, futures_obj, data):
@@ -158,26 +159,29 @@ async def start_streaming(client_id, json_config):
 CALLBACK_SPEAK_BY_AUDIO = CFUNCTYPE(None, c_int, c_char_p, c_int, c_char_p)
 def callback_speak_by_audio(code, status, frame_id, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
-    status = status.decode('utf-8')  # 解码角色名
-    print(f"语音说话: {code}, 客户端ID: {client_id}, info: {status}")
-    if code == MSDKStatus.MSDK_ERROR_SPEAK_BY_AUDIO.value:
-        print(f"播放失败: {client_id},")
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    if status["FrameId"] == -1:
+        if code == MSDKStatus.MSDK_ERROR_SPEAK_BY_AUDIO.value:
+            print(f"语音说话: {code}, 客户端ID: {client_id}")
+            set_futures_status(client_id, futures_speak_by_audio_stream, {"code": code, "status": status, "success": True, "client_id": client_id})
+            # {"code": code, "status": status, "success": True, "client_id": client_id}
+        else:
+            print(f"语音说话失败: {code}, 客户端ID: {client_id}")
+            set_futures_status(client_id, futures_speak_by_audio_stream, {"code": code, "success": False,"status": status,  "client_id": client_id})
+
     
 callback_speak_by_audio_instance = CALLBACK_SPEAK_BY_AUDIO(callback_speak_by_audio)
 
 
-def speak_by_audio(client_id, config):
-    # typedef struct MSDKSpeakByAudio {
-    #     int FrameNum; // 一帧数据量，建议为8320
-    #     int FrameID;// 帧ID
-    #     const char* Subtitle;// 字幕
-    #     void* Data;// 音频数据
+def speak_by_audio(client_id, config, feature):
     # } MSDKJsonParams_SpeakByAudio;
         # ○ 音频数据流，采样率为16000，单通道。
         # ○ 最后一帧需要传入FrameId为-1
     json_config = MSDKJsonParamsSpeakByAudio()
     json_config.FrameNum = config['FrameNum']
     json_config.FrameID = config['FrameID']
+    if feature:
+        futures_speak_by_audio_stream[client_id] = feature
     print(f"FrameID====send: {json_config.FrameID}")
     json_config.Data = ctypes.cast(ctypes.create_string_buffer(bytes(config['Data'])), ctypes.c_void_p)
     msdk.MSDK_SpeakByAudioData(c_char_p(client_id.encode('utf-8')), ctypes.byref(json_config), callback_speak_by_audio_instance)
