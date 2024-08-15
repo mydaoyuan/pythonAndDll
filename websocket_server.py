@@ -104,7 +104,8 @@ async def start_websocket_client(uri):
             "frame_id": 0,
             "is_final": False,
             "audioDone": True,
-            "id": random_id_str
+            "id": random_id_str,
+            "audio_future": None
         }
         wf = initialize_audio_file(connected[random_id_str]['client_id'])
         connected[random_id_str]['wav_file'] = wf

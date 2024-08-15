@@ -70,12 +70,15 @@ async def messageHandler(data, connected):
         feature = None
         if (len(connected['audio_buffer']) == 0):
             feature = asyncio.Future()
+            connected["audio_future"] = feature
         await process_audio_data(connected, audio_bytes, feature)
             
 
     if data['type'] == 'audioEnd':
         connected['is_final'] = True
         await process_audio_data(connected, b'', None)
+        result = await connected["audio_future"]
+        await connected['websocket'].send(json.dumps(result))
 
     if data['action'] == 'stop':
         # 停止推流
