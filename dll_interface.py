@@ -316,10 +316,10 @@ def callback_change_character_pos(code, status, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     if code == MSDKStatus.MSDK_SUCCESS_CHANGE_CHARACTER_POSITION.value:
-        set_futures_status(client_id, futures_change_chara_pos, {"code": code, "success": True , "status": status, "client_id": client_id})
+        set_futures_status(client_id, futures_change_chara_pos, {"code": code, "success": True , "status": status, "name": "change_character_pos", "client_id": client_id})
         print(f"更改角色位置: {code},")
     else:
-        set_futures_status(client_id, futures_change_chara_pos, {"code": code, "success": False , "client_id": client_id})
+        set_futures_status(client_id, futures_change_chara_pos, {"code": code, "success": False ,  "name": "change_character_pos", "client_id": client_id})
         print(f"更改角色位置失败: {code},")
 
 callback_change_character_pos_instance = CALLBACK_CHANGE_CHARACTER_POS(callback_change_character_pos)
