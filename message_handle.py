@@ -72,7 +72,8 @@ async def messageHandler(data, connected):
             feature = asyncio.Future()
             connected["audio_future"] = feature
         await process_audio_data(connected, audio_bytes, feature)
-            
+        if feature:
+            feature.set_result({"code": 0, "status": {}, "name": "speak_by_audio", "success": True, "client_id": connected['client_id']})
 
     if data['type'] == 'audioEnd':
         connected['is_final'] = True
@@ -80,8 +81,8 @@ async def messageHandler(data, connected):
         result = await connected["audio_future"]
         await connected['websocket'].send(json.dumps(result))
         # 5s后发送音频结束消息
-        await asyncio.sleep(5)
-        await connected['websocket'].send(json.dumps({"code": 0, "status": {}, "name": "speak_by_audio", "success": True, "client_id": connected['client_id']}))
+        # await asyncio.sleep(5)
+        # await connected['websocket'].send(json.dumps({"code": 0, "status": {}, "name": "speak_by_audio", "success": True, "client_id": connected['client_id']}))
 
     if data['action'] == 'stop':
         # 停止推流
