@@ -131,8 +131,8 @@ async def messageHandler(data, connected):
     if data['action'] == 'start_streaming':
         # 开始推流
         print("开始推流")
-        push_config['rtmp_address'] = data['pushurl']
-        results = await start_streaming(connected['client_id'], json.dumps(push_config))
+        merge_config = merge_dicts(push_config, data['config'])
+        results = await start_streaming(connected['client_id'], json.dumps(merge_config))
         print(f"推流结果: {results}")
         await connected['websocket'].send(json.dumps(results))
 
@@ -210,3 +210,16 @@ def convert_to_bytes(data, addMute=False):
         result = bytes([0] * 320) + result[320:]
     return result
         
+def merge_dicts(dict1, dict2):
+    """
+    Recursively merge two dictionaries.
+    """
+    result = dict1.copy()  # Start with dict1's keys and values
+    for key, value in dict2.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            # If both dictionaries have a dictionary for this key, recurse
+            result[key] = merge_dicts(result[key], value)
+        else:
+            # If not, use dict2's value, overwriting dict1's value if key exists
+            result[key] = value
+    return result
