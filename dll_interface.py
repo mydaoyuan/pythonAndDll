@@ -120,10 +120,10 @@ def callback_start_streaming(code, status ,client_id):
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
     if code == MSDKStatus.MSDK_SUCCESS_START_STREAMING.value:
         print(f"开始直播成功: {code}, 客户端ID: {client_id}")
-        set_futures_status(client_id, futures_start_streaming, {"code": code, "status": status, "success": True, "client_id": client_id})
+        set_futures_status(client_id, futures_start_streaming, {"code": code, "status": status, "success": True,'name': 'start_streaming', "client_id": client_id})
     else:
         print(f"开始直播失败: {code}, 客户端ID: {client_id}")
-        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": False,"status": status,  "client_id": client_id})
+        set_futures_status(client_id, futures_start_streaming, {"code": code, "success": False,"status": status, 'name': 'start_streaming', "client_id": client_id})
 
 
     
