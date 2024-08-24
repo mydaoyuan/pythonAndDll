@@ -54,12 +54,17 @@ push_config = {
 
 async def sendAudioEndData(connected, feature):
     print("发送音频结束数据")
-    while not feature.done():
-        await asyncio.sleep(0)
-    result = await feature
-    print(f"发送音频结束数据: {result}")
-    await connected['websocket'].send(json.dumps(result))
-    connected["audio_future"] = None
+    try:
+        loop = asyncio.get_running_loop()
+        start_time = loop.time()
+        result = await feature  # 等待 feature 完成
+        print(f"发送音频结束数据: {result}")
+        await connected['websocket'].send(json.dumps(result))
+    except Exception as e:
+        print(f"发送数据时发生错误: {e}")
+    finally:
+        connected["audio_future"] = None  # 确保音频 future 被正确重置
+
 
 async def messageHandler(data, connected):
       # 设置默认值防止报错

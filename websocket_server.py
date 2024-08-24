@@ -10,6 +10,12 @@ import json
 import os
 import uuid
 import wave
+import time
+
+async def monitor_loop():
+    while True:
+        print(f"Event loop is running at {time.time()}")
+        await asyncio.sleep(1)  # 每隔1秒检查一次
 
 # 读取 JSON 文件
 with open('config-dev.json', 'r') as config_file:
@@ -73,7 +79,7 @@ async def msdk_handler(websocket):
         print(f"Cleaned up resources for Client ID: {random_id_str}")
 
 async def redis_subscriber_start_websocket(redis):
-    channel_name = 'videohumannew'  # 你需要订阅的频道名称
+    channel_name = 'videohumannewt'  # 你需要订阅的频道名称
     pubsub = redis.pubsub()
     await pubsub.subscribe(channel_name)
     try:
@@ -140,9 +146,10 @@ async def main():
     redis = aioredis.from_url(f'redis://:{redis_password}@{redis_host}:{redis_port}', encoding='utf-8')
     redis_task = asyncio.create_task(redis_subscriber_start_websocket(redis))
     server_task = websockets.serve(msdk_handler, "0.0.0.0", 8765)
-    
+    asyncio.create_task(monitor_loop())
     print("WebSocket服务器启动在 ws://localhost:8765 ：redis地址： ", redis_host, redis_port)
     await asyncio.gather(server_task, redis_task)
+    
 
 if __name__ == "__main__":
     asyncio.run(main())
