@@ -1,7 +1,7 @@
 
 import json
 import asyncio
-from dll_interface import shutdown, remove_prop, add_prop,init_msdk, speak_by_audio, stop_streaming,change_character,change_background,start_streaming,is_streaming,change_character_scale,change_character_pos,change_character_cloth
+from dll_interface import shutdown,stop_audio, remove_prop, add_prop,init_msdk, speak_by_audio, stop_streaming,change_character,change_background,start_streaming,is_streaming,change_character_scale,change_character_pos,change_character_cloth
 from functools import partial
 
 FRAME_SIZE = 8320  # 每帧固定大小
@@ -139,6 +139,10 @@ async def messageHandler(data, connected):
         # 移除道具
         results = await remove_prop(connected['client_id'], data['prop_id'])
         await connected['websocket'].send(json.dumps(results))
+
+    if data['action'] == 'stop_audio':
+        # 结束UE
+        stop_audio(connected['client_id'])
 
     if data['action'] == 'shutdown':
         # 结束UE

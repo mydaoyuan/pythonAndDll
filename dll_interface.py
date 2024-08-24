@@ -24,6 +24,7 @@ futures_play_character_anim = {}
 futures_change_character_scale = {}
 futures_add_prop = {}
 futures_remove_prop = {}
+futures_stop_audio = {}
 futures_speak_by_audio_file = {}
 futures_speak_by_audio_stream = {}
 futures_shutdown = {}
@@ -467,6 +468,20 @@ async def remove_prop(client_id, prop_id):
         await asyncio.sleep(0)
     result = await future
     return result
+
+# 打断音频
+CALLBACK_STOP_AUDIO_PROP = CFUNCTYPE(None, c_int, c_char_p)
+
+def callback_stop_audio(code, status):
+    status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
+    print(f"打断说话: {code},  info: {status}")
+
+callback_stop_audio_instance = CALLBACK_STOP_AUDIO_PROP(callback_stop_audio)
+
+# MSDK_StopAudio
+def stop_audio(client_id):
+    # 调用DLL中的移除道具函数
+    msdk.MSDK_StopAudio(c_char_p(client_id.encode('utf-8')), callback_stop_audio_instance)
 
 
 # 背景管理
