@@ -84,7 +84,7 @@ async def messageHandler(data, connected):
 
     if data['type'] == 'audioEnd':
         connected['is_final'] = True
-        await process_audio_data(connected, b'', None)
+        await process_audio_data(connected, b'')
         # result = await connected["audio_future"]
         # await connected['websocket'].send(json.dumps(result))
         # if feature:
