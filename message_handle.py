@@ -73,14 +73,12 @@ async def messageHandler(data, connected):
         else: 
             audio_bytes = convert_to_bytes(audio_data)
         connected['audioDone'] = False
-        feature = None
-        print(f"audio_future====: {connected['audio_future']}")
         if connected["audio_future"] is None:
             feature = asyncio.Future()
             connected["audio_future"] = feature
             print("Creating sendAudioEndData task")
             asyncio.create_task(sendAudioEndData(connected, feature))
-        await process_audio_data(connected, audio_bytes, feature)
+        await process_audio_data(connected, audio_bytes)
 
 
 
@@ -172,7 +170,7 @@ async def messageHandler(data, connected):
         # 把错误信息上报
             print(f"初始化失败: {e}")
 
-def send_frame(frame_data, frame_id, connected, feature):
+def send_frame(frame_data, frame_id, connected):
     wf = connected['wav_file']
     # 若是最后一帧，则FrameID设置为-1
     if len(frame_data) == 0 and  frame_id != -1:
@@ -188,24 +186,24 @@ def send_frame(frame_data, frame_id, connected, feature):
     wf.writeframes(frame_data)
     speak_by_audio(connected['client_id'], json_config, connected["audio_future"])
 
-async def process_audio_data(connected, data, feature):
+async def process_audio_data(connected, data):
     connected['audio_buffer'].extend(data)
 
     while len(connected['audio_buffer']) >= FRAME_SIZE:
-        send_frame(connected['audio_buffer'][:FRAME_SIZE], connected['frame_id'], connected, feature)
+        send_frame(connected['audio_buffer'][:FRAME_SIZE], connected['frame_id'], connected)
         connected['frame_id'] += 1
         connected['audio_buffer'] = connected['audio_buffer'][FRAME_SIZE:]
 
     if connected['is_final'] and not connected['audioDone']:
         # 发送所有剩余数据，无论其大小
         if len(connected['audio_buffer']) > 0:
-            send_frame(connected['audio_buffer'], connected['frame_id'], connected, feature)
+            send_frame(connected['audio_buffer'], connected['frame_id'], connected)
             # await asyncio.sleep(0.1)  # 使用异步sleep
         # 重置
         print("发送最后一帧")
         connected['audio_buffer'] = bytearray()
         connected['frame_id'] = 0
-        send_frame(connected['audio_buffer'], -1, connected, feature)
+        send_frame(connected['audio_buffer'], -1, connected)
         connected['is_final'] = False
         connected['audioDone'] = True
            

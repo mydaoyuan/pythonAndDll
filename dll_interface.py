@@ -164,11 +164,11 @@ def callback_speak_by_audio(code, status, frame_id, client_id):
     if status["data"]["FrameId"] == -1:
         if code == MSDKStatus.MSDK_SUCCESS_SPEAK_BY_AUDIO_FINISH.value:
             print(f"语音说话: {code}, 客户端ID: {client_id}")
-            set_futures_status(client_id, futures_speak_by_audio_stream, {"code": code, "status": status, "name": "speak_by_audio", "success": True, "client_id": client_id})
+            set_futures_status(client_id, futures_speak_by_audio_stream, {"code": 204, "status": status, "name": "speak_by_audio", "success": True, "client_id": client_id})
             # {"code": code, "status": status, "success": True, "client_id": client_id}
         else:
             print(f"语音说话失败: {code}, 客户端ID: {client_id}")
-            set_futures_status(client_id, futures_speak_by_audio_stream, {"code": code, "success": False, "name": "speak_by_audio", "status": status,  "client_id": client_id})
+            set_futures_status(client_id, futures_speak_by_audio_stream, {"code": 204, "success": False, "name": "speak_by_audio", "status": status,  "client_id": client_id})
 
     
 callback_speak_by_audio_instance = CALLBACK_SPEAK_BY_AUDIO(callback_speak_by_audio)
