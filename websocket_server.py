@@ -54,6 +54,7 @@ async def msdk_handler(websocket):
         "frame_id": 0,
         "is_final": False,
         "audioDone": True,
+        "audio_future": None,
         "id": random_id_str
     }
     wf = initialize_audio_file(connected[random_id_str]['client_id'])
@@ -72,7 +73,7 @@ async def msdk_handler(websocket):
         print(f"Cleaned up resources for Client ID: {random_id_str}")
 
 async def redis_subscriber_start_websocket(redis):
-    channel_name = 'videohuman'  # 你需要订阅的频道名称
+    channel_name = 'videohumannew'  # 你需要订阅的频道名称
     pubsub = redis.pubsub()
     await pubsub.subscribe(channel_name)
     try:
@@ -113,7 +114,7 @@ async def start_websocket_client(uri):
         try:
             async for message in websocket:
                 data = json.loads(message)
-                print(f"收到websocket消息: {data}")
+                # print(f"收到websocket消息: {data}")
                 await messageHandler(data, connected[random_id_str])
             print("WebSocket连接正常关闭")  # 添加这行来确认循环是否正常结束
             await clearnWebscoket(random_id_str)

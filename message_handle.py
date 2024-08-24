@@ -52,6 +52,12 @@ push_config = {
             }
         }
 
+async def sendAudioEndData(connected, feature):
+    print("发送音频结束数据")
+    result = await feature
+    print(f"发送音频结束数据: {result}")
+    await connected['websocket'].send(json.dumps(result))
+    connected["audio_future"] = None
 
 async def messageHandler(data, connected):
       # 设置默认值防止报错
@@ -68,13 +74,13 @@ async def messageHandler(data, connected):
             audio_bytes = convert_to_bytes(audio_data)
         connected['audioDone'] = False
         feature = None
-        if (len(connected['audio_buffer']) == 0):
+        print(f"audio_future====: {connected['audio_future']}")
+        if connected["audio_future"] is None:
             feature = asyncio.Future()
             connected["audio_future"] = feature
+            print("Creating sendAudioEndData task")
+            asyncio.create_task(sendAudioEndData(connected, feature))
         await process_audio_data(connected, audio_bytes, feature)
-        if feature:
-            result = await feature
-            await connected['websocket'].send(json.dumps(result))
 
 
 
@@ -180,7 +186,7 @@ def send_frame(frame_data, frame_id, connected, feature):
     }
     # 将数据写入WAV文件
     wf.writeframes(frame_data)
-    speak_by_audio(connected['client_id'], json_config, feature)
+    speak_by_audio(connected['client_id'], json_config, connected["audio_future"])
 
 async def process_audio_data(connected, data, feature):
     connected['audio_buffer'].extend(data)

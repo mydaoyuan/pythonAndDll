@@ -160,7 +160,7 @@ CALLBACK_SPEAK_BY_AUDIO = CFUNCTYPE(None, c_int, c_char_p, c_int, c_char_p)
 def callback_speak_by_audio(code, status, frame_id, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
-    print(f"callback_speak_by_audio=====run, {status} {frame_id}")
+    print(f"callback_speak_by_audio=====run, {client_id in futures_speak_by_audio_stream}")
     if status["data"]["FrameId"] == -1:
         if code == MSDKStatus.MSDK_SUCCESS_SPEAK_BY_AUDIO_FINISH.value:
             print(f"语音说话: {code}, 客户端ID: {client_id}")
@@ -181,7 +181,9 @@ def speak_by_audio(client_id, config, feature):
     json_config = MSDKJsonParamsSpeakByAudio()
     json_config.FrameNum = config['FrameNum']
     json_config.FrameID = config['FrameID']
-    if feature:
+    print(f"feature====speak_by_audio: {feature}")
+    if not feature is None:
+        print(f"feature set: {feature}")
         futures_speak_by_audio_stream[client_id] = feature
     print(f"FrameID====send: {json_config.FrameID}")
     json_config.Data = ctypes.cast(ctypes.create_string_buffer(bytes(config['Data'])), ctypes.c_void_p)
