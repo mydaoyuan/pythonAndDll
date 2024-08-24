@@ -54,6 +54,8 @@ push_config = {
 
 async def sendAudioEndData(connected, feature):
     print("发送音频结束数据")
+    while not feature.done():
+        await asyncio.sleep(0)
     result = await feature
     print(f"发送音频结束数据: {result}")
     await connected['websocket'].send(json.dumps(result))
