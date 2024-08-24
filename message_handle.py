@@ -144,12 +144,14 @@ async def messageHandler(data, connected):
 
     if data['action'] == 'init':
         print("初始化DLL")
-        json_config = json.dumps({
+        baseConfig = {
             "display_ue_window": True,
             "play_ue_sound": True,
             "ws_server_port": UE_PROT,
             "ue_fullpath": UE_PATH
-        })
+        }
+        json_config = merge_dicts(baseConfig, data['data'])
+        json_config = json.dumps(json_config)
         try:
             results = await async_init_msdk(connected, json_config)
             print(f"初始化结果: {results}")

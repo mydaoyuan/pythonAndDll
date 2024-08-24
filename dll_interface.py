@@ -160,8 +160,9 @@ CALLBACK_SPEAK_BY_AUDIO = CFUNCTYPE(None, c_int, c_char_p, c_int, c_char_p)
 def callback_speak_by_audio(code, status, frame_id, client_id):
     client_id = client_id.decode('utf-8')  # 解码客户端ID
     status = json.loads(status.decode('utf-8'))  # 假设status是UTF-8编码的字符串
-    if status["FrameId"] == -1:
-        if code == MSDKStatus.MSDK_ERROR_SPEAK_BY_AUDIO.value:
+    print(f"callback_speak_by_audio=====run, {status} {frame_id}")
+    if status["data"]["FrameId"] == -1:
+        if code == MSDKStatus.MSDK_SUCCESS_SPEAK_BY_AUDIO_FINISH.value:
             print(f"语音说话: {code}, 客户端ID: {client_id}")
             set_futures_status(client_id, futures_speak_by_audio_stream, {"code": code, "status": status, "success": True, "client_id": client_id})
             # {"code": code, "status": status, "success": True, "client_id": client_id}

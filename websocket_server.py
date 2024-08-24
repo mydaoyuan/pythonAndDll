@@ -140,7 +140,7 @@ async def main():
     redis_task = asyncio.create_task(redis_subscriber_start_websocket(redis))
     server_task = websockets.serve(msdk_handler, "0.0.0.0", 8765)
     
-    print("WebSocket服务器启动在 ws://localhost:8765")
+    print("WebSocket服务器启动在 ws://localhost:8765 ：redis地址： ", redis_host, redis_port)
     await asyncio.gather(server_task, redis_task)
 
 if __name__ == "__main__":
