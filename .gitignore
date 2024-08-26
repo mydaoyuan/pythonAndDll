@@ -1,7 +1,7 @@
 __pycache__/
- venv/
- command.json
- config-dev.json
- config.json
- line.log
- logs/
+venv/
+command.json
+config-dev.json
+config.json
+line.log
+logs/
